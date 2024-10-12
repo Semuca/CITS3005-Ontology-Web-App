@@ -36,7 +36,7 @@ for row in g.query(queryTenOrMoreGuides):
 
 # Query for 'What procedures include a tool that is never mentioned in the procedure steps?'
 queryUnmentionedTools = """
-    SELECT ?guide
+    SELECT DISTINCT ?guide
     WHERE {
         ?guide rdf:type ifixit:guide .
         ?tool rdf:type ifixit:tool .
@@ -59,7 +59,7 @@ for row in g.query(queryUnmentionedTools):
 
 # Query for 'What procedures include the words 'careful' or 'dangerous' in the raw text of a step line?'
 queryCarefulOrDangerous = """
-    SELECT ?guide
+    SELECT DISTINCT ?guide
     WHERE {
         ?guide rdf:type ifixit:guide .
         ?step ifixit:stepOf ?guide .
