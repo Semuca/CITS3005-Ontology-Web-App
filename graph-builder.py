@@ -8,7 +8,9 @@ from rdflib import RDF, Graph, Literal, Namespace, URIRef, DC
 # RDF setup
 domain = "https://www.ifixit.com/"
 IFIXIT = Namespace(domain)
+
 g = Graph()
+g.bind("ifixit", IFIXIT)
 
 # API setup
 base_url = f"{domain}api/2.0/"
@@ -74,7 +76,7 @@ for guide in guides:
         stepRef = URIRef(f"{domain}guide/{full_guide['guideid']}/{step['stepid']}")
         g.add((stepRef, RDF.type, IFIXIT.step))
         g.add((stepRef, DC.title, Literal(step["title"])))
-        g.add((guideRef, IFIXIT.stepOf, stepRef))
+        g.add((stepRef, IFIXIT.stepOf, guideRef))
 
         # Add step comments
         for comment in step["comments"]:
@@ -85,7 +87,7 @@ for guide in guides:
         for imageData in media.get("data", []) if media.get("type") == "image" else []:
             imageRef = URIRef(imageData["standard"])
             g.add((imageRef, RDF.type, IFIXIT.image))
-            g.add((stepRef, IFIXIT.mediaOf, imageRef))
+            g.add((imageRef, IFIXIT.mediaOf, stepRef))
 
 with open("data.rdf", "wb") as file:
     file.write(g.serialize(format="xml").encode())
