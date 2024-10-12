@@ -33,3 +33,26 @@ queryTenOrMoreGuides = """
 print("\nQuery for 'What items have 10 or more guides written for them?'")
 for row in g.query(queryTenOrMoreGuides):
     print(row)
+
+# Query for 'What procedures include a tool that is never mentioned in the procedure steps?'
+queryUnmentionedTools = """
+    SELECT ?guide
+    WHERE {
+        ?guide rdf:type ifixit:guide .
+        ?tool rdf:type ifixit:tool .
+    
+        MINUS {
+            ?tool ifixit:toolOf ?guide .
+        }
+
+        ?step ifixit:stepOf ?guide .
+        ?line ifixit:lineOf ?step .
+        ?line ifixit:rawText ?rawText .
+
+        FILTER(CONTAINS(?rawText, STR(?tool)))
+    }
+"""
+
+print("\nQuery for 'What procedures include a tool that is never mentioned in the procedure steps?'")
+for row in g.query(queryUnmentionedTools):
+    print(row)

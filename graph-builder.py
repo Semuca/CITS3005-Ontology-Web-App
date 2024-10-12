@@ -89,6 +89,13 @@ for guide in guides:
         for comment in step["comments"]:
             addComment(comment, stepRef)
 
+        # Add step lines
+        for i, line in enumerate(step["lines"]):
+            lineRef = URIRef(f"{domain}guide/{full_guide['guideid']}/{step['stepid']}/{i}")
+            g.add((lineRef, RDF.type, IFIXIT.line))
+            g.add((lineRef, IFIXIT.rawText, Literal(line["text_raw"])))
+            g.add((lineRef, IFIXIT.lineOf, stepRef))
+
         # Add images
         media = step.get("media", {})
         for imageData in media.get("data", []) if media.get("type") == "image" else []:
