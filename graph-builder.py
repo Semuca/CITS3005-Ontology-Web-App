@@ -51,9 +51,16 @@ for guide in guides:
 
     guideRef = URIRef(full_guide["url"])
     g.add((guideRef, DC.title, Literal(full_guide["title"])))
+    g.add((guideRef, RDF.type, IFIXIT.guide))
 
     # Add author
     addAuthor(full_guide["author"], guideRef)
+
+    # Add category
+    categoryRef = URIRef(f"{domain}category/{full_guide["category"].lower().replace(' ', '-')}")
+    g.add((categoryRef, RDF.type, IFIXIT.category))
+    g.add((categoryRef, IFIXIT.name, Literal(full_guide["category"])))
+    g.add((guideRef, IFIXIT.guideOf, categoryRef))
 
     # Add parts
     for part in full_guide["parts"]:
