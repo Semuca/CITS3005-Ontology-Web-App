@@ -53,15 +53,21 @@ for guide in guides:
     # Add author
     addAuthor(full_guide["author"], guideRef)
 
-    # Add guide comments
-    for comment in full_guide["comments"]:
-        addComment(comment, guideRef)
+    # Add parts
+    for part in full_guide["parts"]:
+        partRef = URIRef(parseURL(part["url"]))
+        g.add((partRef, RDF.type, IFIXIT.part))
+        g.add((partRef, IFIXIT.name, Literal(part["text"])))
     
     # Add tools
     for tool in full_guide["tools"]:
         toolRef = URIRef(parseURL(tool["url"]))
         g.add((toolRef, IFIXIT.toolOf, guideRef))
         g.add((toolRef, RDF.type, IFIXIT.tool))
+
+    # Add guide comments
+    for comment in full_guide["comments"]:
+        addComment(comment, guideRef)
 
     # Add steps
     for step in full_guide["steps"]:
