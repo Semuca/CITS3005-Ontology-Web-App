@@ -56,3 +56,20 @@ queryUnmentionedTools = """
 print("\nQuery for 'What procedures include a tool that is never mentioned in the procedure steps?'")
 for row in g.query(queryUnmentionedTools):
     print(row)
+
+# Query for 'What procedures include the words 'careful' or 'dangerous' in the raw text of a step line?'
+queryCarefulOrDangerous = """
+    SELECT ?guide
+    WHERE {
+        ?guide rdf:type ifixit:guide .
+        ?step ifixit:stepOf ?guide .
+        ?line ifixit:lineOf ?step .
+        ?line ifixit:rawText ?rawText .
+
+        FILTER(CONTAINS(?rawText, "careful") || CONTAINS(?rawText, "dangerous"))
+    }
+"""
+
+print("\nQuery for 'What procedures include the words 'careful' or 'dangerous' in the raw text of a step line?'")
+for row in g.query(queryCarefulOrDangerous):
+    print(row)
