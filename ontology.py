@@ -1,22 +1,75 @@
 from owlready2 import *
+from rdflib import Graph, Namespace
+
+PROPS = Namespace("http://iFixthat.org/properties")
+
+#TODO Load the knowledge graph
+# myFixit = Graph()
+# myFixit.parse("data.rdf", format="xml")
 
 # Create the ontology
-onto = get_ontology("http://example.org/ifixit_ontology.owl")
+onto = get_ontology("http://iFixthat.org/onto.owl")
 
 with onto:
     class Procedure(Thing): pass
     class Item(Thing): pass
-    class Part(Item): pass
     class Part(Thing): pass
     class Tool(Thing): pass
     class Step(Thing): pass
     class Image(Thing): pass
 
-    class part_of(Item >> Item, TransitiveProperty): pass
-    class uses_tool(Step >> Tool): pass
-    class has_toolbox(Procedure >> Tool): pass
-    class has_step(Procedure >> Step): pass
-    class sub_procedure_of(Procedure >> Procedure): pass
-    class has_image(Step >> Image): pass
+    # Procedure schema
+    class subProcedureOf(ObjectProperty, TransitiveProperty):
+        domain = [Procedure]
+        range = [Procedure]
 
-onto.save("ifixit_ontology.owl")
+    #TODO: hasSteps
+
+    class requiresTool(ObjectProperty):
+        domain = [Procedure]
+        range = [Tool]
+    class hasImage(ObjectProperty):
+        domain = [Procedure | Tool | Step]
+        range = [Image]
+
+    class procedureOf(ObjectProperty):
+        domain = [Procedure]
+        range = [Item]
+    class difficulty(DataProperty, FunctionalProperty):
+        domain = [Procedure]
+        range = [str]
+    #TODO: timeEstimate
+    class introduction(DataProperty):
+        domain = [Procedure]
+        range = [str]
+    class conclusion(DataProperty):
+        domain = [Procedure]
+        range = [str]
+
+    # Item schema
+    class subItemOf(ObjectProperty, TransitiveProperty):
+        domain = [Item]
+        range = [Item]
+
+    # Part schema
+    class partOf(ObjectProperty, TransitiveProperty):
+        domain = [Part]
+        range = [Part | Item]
+
+    # Tool schema
+    # class hasImage(ObjectProperty): - Defined in Procedure schema
+    #     domain = [Procedure | Tool | Step]
+    #     range = [Image]
+
+    # Step schema
+    #TODO: hasActions
+    # class hasImage(ObjectProperty): - Defined in Procedure schema
+    #     domain = [Procedure | Tool | Step]
+    #     range = [Image]
+
+    # Image schema
+    class dataUrl(DataProperty):
+        domain = [Image]
+        range = [str]
+
+onto.save("ontology.owl")
