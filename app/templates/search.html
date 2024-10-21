@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for result in results %}
+    <a style="padding: 10px; display:block; margin: 10px; background-color: lightgray; border-radius: 4px; border: 2px solid gray;">
+        <p>{{ result }}</p>
+    </a>
+{% endfor %}
+
+{% endblock %}

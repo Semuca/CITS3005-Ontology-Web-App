@@ -2,7 +2,7 @@ import rdflib
 
 # Load the ontology into RDFLib
 g = rdflib.Graph()
-g.parse("data.rdf", format="xml")
+g.parse("data.rdf", format="ttl")
 
 # Query for 'What guides have 6 or more steps?'
 querySixOrMoreParts = """
@@ -36,20 +36,31 @@ for row in g.query(queryTenOrMoreGuides):
 
 # Query for 'What procedures include a tool that is never mentioned in the procedure steps?'
 queryUnmentionedTools = """
-    SELECT DISTINCT ?guide
+    SELECT DISTINCT ?guide ?toolName
     WHERE {
         ?guide rdf:type ifixit:guide .
-        ?tool rdf:type ifixit:tool .
-    
+        ?unusedTool rdf:type ifixit:tool .
+        ?unusedTool ifixit:name ?unusedToolName .
+
+        # Remove tools that are substrings of used tools
         MINUS {
+            ?tool rdf:type ifixit:tool .
             ?tool ifixit:toolOf ?guide .
+            ?tool ifixit:name ?toolName .
+
+            FILTER(CONTAINS(?toolName, ?unusedToolName))
         }
+    
+        # # Remove tools that are used in the guide
+        # MINUS {
+        #     ?unusedTool ifixit:toolOf ?guide .
+        # }
 
         ?step ifixit:stepOf ?guide .
         ?line ifixit:lineOf ?step .
         ?line ifixit:rawText ?rawText .
 
-        FILTER(CONTAINS(?rawText, STR(?tool)))
+        FILTER(CONTAINS(?rawText, ?toolName))
     }
 """
 
