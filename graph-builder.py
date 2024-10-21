@@ -15,6 +15,7 @@ g.bind("ifixit", IFIXIT)
 # API setup
 base_url = f"{domain}api/2.0/"
 
+# Helper functions
 def parseURL(url: str) -> str:
     return f"{domain[:-1] if url[0] == "/" else ""}{url}"
 
@@ -25,6 +26,22 @@ def makeRequest(path: str) -> Any:
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
+# Get all categories
+categories = makeRequest("categories")
+
+# Recursively turn categories into a list of words
+def parseCategories(categories: dict[str, Any]) -> list[str]:
+    words = []
+    for category, value in categories.items():
+        if value is None:
+            words.append(category)
+        else:
+            words.extend(parseCategories(value))
+
+    return words
+
+categoryFilters = parseCategories(categories["Game Console"])
 
 # RDF helper functions
 def addAuthor(data: Any, authorOf: URIRef) -> None:
@@ -43,65 +60,75 @@ def addComment(data: Any, commentOf: URIRef) -> None:
     for reply in data.get("replies", []):
         addComment(reply, commentRef)
 
-# Get all guides (up to 200 for now)
-guides = makeRequest("guides")
+offset = 0
+guides = makeRequest("guides?limit=200")
 
-for guide in guides:
-    full_guide = makeRequest(f"guides/{guide["guideid"]}")
+guides_fetched = 0
+guides_to_fetch = 1000
 
-    guideRef = URIRef(full_guide["url"])
-    g.add((guideRef, DC.title, Literal(full_guide["title"])))
-    g.add((guideRef, RDF.type, IFIXIT.guide))
+while len(guides) != 0 and guides_fetched < guides_to_fetch:
+    filteredGuides = [guide for guide in guides if guide["category"] in categoryFilters]
 
-    # Add author
-    addAuthor(full_guide["author"], guideRef)
+    for guide in filteredGuides:
+        full_guide = makeRequest(f"guides/{guide["guideid"]}")
+        guides_fetched += 1
 
-    # Add category
-    categoryRef = URIRef(f"{domain}category/{full_guide["category"].lower().replace(' ', '-')}")
-    g.add((categoryRef, RDF.type, IFIXIT.category))
-    g.add((categoryRef, IFIXIT.name, Literal(full_guide["category"])))
-    g.add((guideRef, IFIXIT.guideOf, categoryRef))
+        guideRef = URIRef(full_guide["url"])
+        g.add((guideRef, DC.title, Literal(full_guide["title"])))
+        g.add((guideRef, RDF.type, IFIXIT.guide))
 
-    # Add parts
-    for part in full_guide["parts"]:
-        partRef = URIRef(parseURL(part["url"]))
-        g.add((partRef, RDF.type, IFIXIT.part))
-        g.add((partRef, IFIXIT.name, Literal(part["text"])))
+        # Add author
+        addAuthor(full_guide["author"], guideRef)
+
+        # Add category
+        categoryRef = URIRef(f"{domain}category/{full_guide["category"].lower().replace(' ', '-')}")
+        g.add((categoryRef, RDF.type, IFIXIT.category))
+        g.add((categoryRef, IFIXIT.name, Literal(full_guide["category"])))
+        g.add((guideRef, IFIXIT.guideOf, categoryRef))
+
+        # Add parts
+        for part in full_guide["parts"]:
+            partRef = URIRef(parseURL(part["url"]))
+            g.add((partRef, RDF.type, IFIXIT.part))
+            g.add((partRef, IFIXIT.name, Literal(part["text"])))
+
+        # Add tools
+        for tool in full_guide["tools"]:
+            toolRef = URIRef(parseURL(tool["url"]))
+            g.add((toolRef, IFIXIT.toolOf, guideRef))
+            g.add((toolRef, RDF.type, IFIXIT.tool))
+
+        # Add guide comments
+        for comment in full_guide["comments"]:
+            addComment(comment, guideRef)
+
+        # Add steps
+        for step in full_guide["steps"]:
+            stepRef = URIRef(f"{domain}guide/{full_guide['guideid']}/{step['stepid']}")
+            g.add((stepRef, RDF.type, IFIXIT.step))
+            g.add((stepRef, DC.title, Literal(step["title"])))
+            g.add((stepRef, IFIXIT.stepOf, guideRef))
+
+            # Add step comments
+            for comment in step["comments"]:
+                addComment(comment, stepRef)
+
+            # Add step lines
+            for i, line in enumerate(step["lines"]):
+                lineRef = URIRef(f"{domain}guide/{full_guide['guideid']}/{step['stepid']}/{i}")
+                g.add((lineRef, RDF.type, IFIXIT.line))
+                g.add((lineRef, IFIXIT.rawText, Literal(line["text_raw"])))
+                g.add((lineRef, IFIXIT.lineOf, stepRef))
+
+            # Add images
+            media = step.get("media", {})
+            for imageData in media.get("data", []) if media.get("type") == "image" else []:
+                imageRef = URIRef(imageData["standard"])
+                g.add((imageRef, RDF.type, IFIXIT.image))
+                g.add((imageRef, IFIXIT.mediaOf, stepRef))
     
-    # Add tools
-    for tool in full_guide["tools"]:
-        toolRef = URIRef(parseURL(tool["url"]))
-        g.add((toolRef, IFIXIT.toolOf, guideRef))
-        g.add((toolRef, RDF.type, IFIXIT.tool))
-
-    # Add guide comments
-    for comment in full_guide["comments"]:
-        addComment(comment, guideRef)
-
-    # Add steps
-    for step in full_guide["steps"]:
-        stepRef = URIRef(f"{domain}guide/{full_guide['guideid']}/{step['stepid']}")
-        g.add((stepRef, RDF.type, IFIXIT.step))
-        g.add((stepRef, DC.title, Literal(step["title"])))
-        g.add((stepRef, IFIXIT.stepOf, guideRef))
-
-        # Add step comments
-        for comment in step["comments"]:
-            addComment(comment, stepRef)
-
-        # Add step lines
-        for i, line in enumerate(step["lines"]):
-            lineRef = URIRef(f"{domain}guide/{full_guide['guideid']}/{step['stepid']}/{i}")
-            g.add((lineRef, RDF.type, IFIXIT.line))
-            g.add((lineRef, IFIXIT.rawText, Literal(line["text_raw"])))
-            g.add((lineRef, IFIXIT.lineOf, stepRef))
-
-        # Add images
-        media = step.get("media", {})
-        for imageData in media.get("data", []) if media.get("type") == "image" else []:
-            imageRef = URIRef(imageData["standard"])
-            g.add((imageRef, RDF.type, IFIXIT.image))
-            g.add((imageRef, IFIXIT.mediaOf, stepRef))
+    offset += 200
+    guides = makeRequest(f"guides?limit=200&offset={offset}")
 
 with open("data.rdf", "wb") as file:
     file.write(g.serialize(format="xml").encode())
