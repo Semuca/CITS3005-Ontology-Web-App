@@ -101,6 +101,7 @@ def addGuide(guide_id: Any) -> None:
         toolRef = URIRef(parseURL(tool["url"]))
         g.add((toolRef, IFIXIT.toolOf, guideRef))
         g.add((toolRef, RDF.type, IFIXIT.tool))
+        g.add((toolRef, IFIXIT.name, Literal(tool["text"])))
 
     # Add guide comments
     for comment in full_guide["comments"]:
@@ -132,7 +133,7 @@ def addGuide(guide_id: Any) -> None:
             g.add((imageRef, IFIXIT.mediaOf, stepRef))
 
 guidesFetched = 0
-guidesToFetch = 10
+guidesToFetch = 100000
 
 # Fetch initial guides
 for guideId in initialGuideIds[:guidesToFetch]:
@@ -163,4 +164,4 @@ with open("category-mappings.json", "w") as file:
     json.dump(categoryMappings, file)
 
 with open("data.rdf", "wb") as file:
-    file.write(g.serialize(format="xml").encode())
+    file.write(g.serialize(format="ttl").encode())
