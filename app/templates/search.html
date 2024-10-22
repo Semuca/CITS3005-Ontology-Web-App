@@ -2,8 +2,15 @@
 
 {% block content %}
 
-{% with links=results %}
-    {% include "common/links.html" %}
-{% endwith %}
+{% if results %}
+    <h2>Search Results</h2>
+    <p>Found {{ results|length }} results:</p>
+    {% with links=results %}
+        {% include "common/links.html" %}
+    {% endwith %}
+{% else %}
+    <h2>No Results</h2>
+    <p>Sorry, no results were found.</p>
+{% endif %}
 
 {% endblock %}
