@@ -1,0 +1,15 @@
+{% for link in links %}
+    <a class="link" href="{{ link.url }}">
+        <div style="display: flex; justify-content: space-between">
+            <div>
+                <strong>{{ link.name }}</strong>
+
+                <div style="display: flex; align-items: center; gap: 4px; margin-top: 8px">
+                    <span class="material-symbols-outlined">{{ link.icon }}</span>
+                    <span>{{ link.rdf_type }}</span>
+                </div>
+            </div>
+            <button class="openDeleteButton">Delete</button>
+        </div>
+    </a>
+{% endfor %}
