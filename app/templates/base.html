@@ -17,14 +17,17 @@
         <!-- Modal -->
         <div id="searchModal" class="modal">
             <div class="modal-content">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
                     <h2>Modal Title</h2>
                     <button id="closeSearchButton">&times;</button>
                 </div>
                 <p>This is a simple modal example.</p>
+                <button id="searchButton">Search</button>
             </div>
         </div>
 
-        {% block content %}{% endblock %}
+        <div style="padding: 0px 10px">
+            {% block content %}{% endblock %}
+        </div>
     </body>
 </html>

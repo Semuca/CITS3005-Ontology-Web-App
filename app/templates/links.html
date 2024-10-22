@@ -1,0 +1,6 @@
+{% for link in links %}
+    <a class="link" href="{{ link.url }}">
+        <strong>{{ link.name }}</strong>
+        <p>{{ link.rdf_type }}</p>
+    </a>
+{% endfor %}
