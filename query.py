@@ -42,25 +42,25 @@ queryUnmentionedTools = """
         ?unusedTool rdf:type ifixit:tool .
         ?unusedTool ifixit:name ?unusedToolName .
 
-        # Remove tools that are substrings of used tools
-        MINUS {
-            ?tool rdf:type ifixit:tool .
-            ?tool ifixit:toolOf ?guide .
-            ?tool ifixit:name ?toolName .
-
-            FILTER(CONTAINS(?toolName, ?unusedToolName))
-        }
-    
-        # # Remove tools that are used in the guide
+        # # Remove tools that are substrings of used tools
         # MINUS {
-        #     ?unusedTool ifixit:toolOf ?guide .
+        #     ?tool rdf:type ifixit:tool .
+        #     ?tool ifixit:toolOf ?guide .
+        #     ?tool ifixit:name ?toolName .
+
+        #     FILTER(CONTAINS(?toolName, ?unusedToolName))
         # }
+    
+        # Remove tools that are used in the guide
+        MINUS {
+            ?unusedTool ifixit:toolOf ?guide .
+        }
 
         ?step ifixit:stepOf ?guide .
         ?line ifixit:lineOf ?step .
         ?line ifixit:rawText ?rawText .
 
-        FILTER(CONTAINS(?rawText, ?toolName))
+        FILTER(CONTAINS(?rawText, ?unusedToolName))
     }
 """
 
