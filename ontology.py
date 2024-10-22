@@ -1,14 +1,14 @@
 from owlready2 import *
 from rdflib import Graph, Namespace
 
-PROPS = Namespace("http://iFixthat.org/properties")
+PROPS = Namespace("http://ifixthat.org/properties")
 
 #TODO Load the knowledge graph
-# myFixit = Graph()
-# myFixit.parse("data.rdf", format="xml")
+# g = Graph()
+# g.parse("graph.rdf", format="xml")
 
 # Create the ontology
-onto = get_ontology("http://iFixthat.org/onto.owl")
+onto = get_ontology("http://ifixthat.org/onto.owl")
 
 with onto:
     class Procedure(Thing): pass
@@ -19,35 +19,20 @@ with onto:
     class Image(Thing): pass
 
     # Procedure schema
-    class subProcedureOf(ObjectProperty, TransitiveProperty):
+    class prerequisiteOf(ObjectProperty, TransitiveProperty):
         domain = [Procedure]
         range = [Procedure]
-
-    #TODO: hasSteps
 
     class requiresTool(ObjectProperty):
         domain = [Procedure]
         range = [Tool]
-    class hasImage(ObjectProperty):
-        domain = [Procedure | Tool | Step]
-        range = [Image]
 
-    class procedureOf(ObjectProperty):
+    class guideOf(ObjectProperty):
         domain = [Procedure]
-        range = [Item]
-    class difficulty(DataProperty, FunctionalProperty):
-        domain = [Procedure]
-        range = [str]
-    #TODO: timeEstimate
-    class introduction(DataProperty):
-        domain = [Procedure]
-        range = [str]
-    class conclusion(DataProperty):
-        domain = [Procedure]
-        range = [str]
+        range = [Item | Part]
 
     # Item schema
-    class subItemOf(ObjectProperty, TransitiveProperty):
+    class subCategoryOf(ObjectProperty, TransitiveProperty):
         domain = [Item]
         range = [Item]
 
@@ -57,15 +42,35 @@ with onto:
         range = [Part | Item]
 
     # Tool schema
-    # class hasImage(ObjectProperty): - Defined in Procedure schema
-    #     domain = [Procedure | Tool | Step]
-    #     range = [Image]
+    class hasImage(ObjectProperty):
+        domain = [Tool | Step]
+        range = [Image]
+
+    class supplierUrl(DataProperty):
+        domain = [Tool]
+        range = [str]
+
 
     # Step schema
-    #TODO: hasActions
-    # class hasImage(ObjectProperty): - Defined in Procedure schema
-    #     domain = [Procedure | Tool | Step]
+    class stepOf(ObjectProperty):
+        domain = [Step]
+        range = [Procedure]
+
+    # class hasImage(ObjectProperty): - already defined in Tool schema
+    #     domain = [Tool | Step]
     #     range = [Image]
+
+    class usesTool(ObjectProperty):
+        domain = [Step]
+        range = [Tool]
+
+    class number(DataProperty):
+        domain = [Step]
+        range = [int]
+
+    class actions(DataProperty):
+        domain = [Step]
+        range = [str]
 
     # Image schema
     class dataUrl(DataProperty):
