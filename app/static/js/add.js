@@ -9,5 +9,18 @@ openAddModalButton.addEventListener("click", () => {
 const addButton = document.getElementById("addButton");
 addButton.addEventListener("click", () => {
     //TODO: Implement add functionality
-    window.location.href = '/';
+    
+    fetch('/api/', {
+        method: 'POST',
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.text();
+    }).then(data => {
+        console.log(data);
+    }).catch(error => {
+        console.error(error);
+    });
+    // window.location.href = '/';
 });

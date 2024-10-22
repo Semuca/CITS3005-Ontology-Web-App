@@ -13,5 +13,17 @@ const addButton = document.getElementById("deleteButton");
 
 addButton.addEventListener("click", () => {
     //TODO: Implement delete functionality
-    window.location.href = '/';
+    fetch('/api/', {
+        method: 'DELETE',
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        return response.text();
+    }).then(data => {
+        console.log(data);
+    }).catch(error => {
+        console.error(error);
+    });
+    // window.location.href = '/';
 });
