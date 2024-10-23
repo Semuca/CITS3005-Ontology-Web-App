@@ -2,6 +2,14 @@
 
 {% block content %}
 
+<h2>Step actions:</h2>
+<p>{{ actions }}</p>
+
+<h2>This step uses tools:</h2>
+{% with links=tools %}
+    {% include "common/links.html" %}
+{% endwith %}
+
 <h2>This step is part of procedures:</h2>
 {% with links=procedures %}
     {% include "common/links.html" %}

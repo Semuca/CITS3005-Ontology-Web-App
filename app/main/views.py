@@ -166,20 +166,42 @@ def procedure_page(procedure: str) -> str:
 def step_page(step: str) -> str:
     """The step page"""
 
-    query = f"""
+    uri = f"<{domain}step/{step}>"
+
+    stepDetails = f"""
+        SELECT ?actions
+        WHERE {{
+            {uri} props:actions ?actions .
+        }}
+    """
+
+    actions = list(g.query(stepDetails))[0][0]
+
+    procedureQuery = f"""
         SELECT ?procedure
         WHERE {{
-            <{domain}step/{step}> props:stepOf ?procedure .
+            {uri} props:stepOf ?procedure .
         }}
     """
 
     procedures = []
-    for result in g.query(query):
-        uri = result[0]
-        id = uri.split('/')[-1]
+    for result in g.query(procedureQuery):
+        id = result[0].split('/')[-1]
         procedures.append(Link(id, 'Procedure', f'/procedure/{id}'))
 
-    return render_template('step.html', procedures=procedures)
+    toolQuery = f"""
+        SELECT ?tool
+        WHERE {{
+            {uri} props:usesTool ?tool .
+        }}
+    """
+
+    tools = []
+    for result in g.query(toolQuery):
+        id = result[0].split('/')[-1]
+        tools.append(Link(id, 'Tool', f'/tool/{id}'))
+
+    return render_template('step.html', actions=actions, procedures=procedures, tools=tools)
 
 @main_bp.route("/tool/<tool>")
 def tool_page(tool: str) -> str:
@@ -194,8 +216,7 @@ def tool_page(tool: str) -> str:
 
     procedures = []
     for result in g.query(query):
-        uri = result[0]
-        id = uri.split('/')[-1]
+        id = result[0].split('/')[-1]
         procedures.append(Link(id, 'Procedure', f'/procedure/{id}'))
 
     return render_template('tool.html', procedures=procedures)
