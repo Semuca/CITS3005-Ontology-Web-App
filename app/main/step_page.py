@@ -16,29 +16,29 @@ def step_page(step: str) -> str:
     """))[0][0]
 
     procedureQuery = f"""
-        SELECT ?procedure
+        SELECT ?procedure ?label
         WHERE {{
             {uri} props:stepOf ?procedure .
+            ?procedure rdfs:label ?label .
         }}
     """
 
     procedures = []
-    for result in g.query(procedureQuery):
-        ref = result[0]
+    for ref, label in g.query(procedureQuery):
         id = ref.split('/')[-1]
-        procedures.append(Link(ref, id, 'Procedure', f'/procedure/{id}'))
+        procedures.append(Link(ref, label, 'Procedure', f'/procedure/{id}'))
 
     toolQuery = f"""
-        SELECT ?tool
+        SELECT ?tool ?label
         WHERE {{
             {uri} props:usesTool ?tool .
+            ?tool rdfs:label ?label .
         }}
     """
 
     tools = []
-    for result in g.query(toolQuery):
-        ref = result[0]
+    for ref, label in g.query(toolQuery):
         id = ref.split('/')[-1]
-        tools.append(Link(ref, id, 'Tool', f'/tool/{id}'))
+        tools.append(Link(ref, label, 'Tool', f'/tool/{id}'))
 
     return render_template('step.html', actions=actions, procedures=procedures, tools=tools)

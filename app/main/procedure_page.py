@@ -16,42 +16,45 @@ def procedure_page(procedure: str) -> str:
     """))[0][0]
 
     stepsQuery = f"""
-        SELECT ?step
+        SELECT ?step ?actions
         WHERE {{
             ?step props:stepOf {uri} .
+            ?step props:actions ?actions .
         }}
     """
 
     steps = []
-    for result in g.query(stepsQuery):
-        ref = result[0]
+    for ref, actions in g.query(stepsQuery):
         id = ref.split('/')[-1]
-        steps.append(Link(ref, id, 'Step', f'/step/{id}'))
+        steps.append(Link(ref, actions, 'Step', f'/step/{id}'))
 
-    partsQuery = f"""
-        SELECT ?part
+    subjectQuery = f"""
+        SELECT ?subject ?type
         WHERE {{
-            {uri} props:guideOf ?part .
+            {uri} props:guideOf ?subject .
+            ?subject rdf:type ?type .
         }}
     """
 
     parts = []
-    for result in g.query(partsQuery):
-        ref = result[0]
+    for ref, rdf_type in g.query(subjectQuery):
         id = ref.split('/')[-1]
-        parts.append(Link(ref, id, 'Part', f'/part/{id}'))
+        if str(rdf_type) == f'{domain}properties/Part':
+            parts.append(Link(ref, id, 'Part', f'/part/{id}'))
+        else:
+            parts.append(Link(ref, id, 'Item', f'/item/{id}'))
 
     toolsQuery = f"""
-        SELECT ?tool
+        SELECT ?tool ?label
         WHERE {{
             {uri} props:requiresTool ?tool .
+            ?tool rdfs:label ?label .
         }}
     """
 
     tools = []
-    for result in g.query(toolsQuery):
-        ref = result[0]
+    for ref, tool_label in g.query(toolsQuery):
         id = ref.split('/')[-1]
-        tools.append(Link(ref, id, 'Tool', f'/tool/{id}'))
+        tools.append(Link(ref, tool_label, 'Tool', f'/tool/{id}'))
 
     return render_template('procedure.html', label=label, steps=steps, parts=parts, tools=tools)
