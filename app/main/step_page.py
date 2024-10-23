@@ -1,14 +1,10 @@
 from flask import render_template
-import rdflib
 
-from .views import main_bp, Link, domain
+from .views import main_bp, Link, domain, g
 
 @main_bp.route("/step/<step>")
 def step_page(step: str) -> str:
     """The step page"""
-
-    g = rdflib.Graph()
-    g.parse("../graph.rdf", format="xml")
 
     uri = f"<{domain}step/{step}>"
 

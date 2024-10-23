@@ -3,6 +3,7 @@
 from flask import request
 import rdflib
 from .bp import api_bp
+from main.views import g
 
 @api_bp.route('/', methods=['DELETE'])
 def delete_entry():
@@ -13,9 +14,6 @@ def delete_entry():
 
     if not uri:
         return 'URI not provided', 400
-
-    g = rdflib.Graph()
-    g.parse("../graph.rdf", format="xml")
 
     g.remove((rdflib.URIRef(uri), None, None))
 

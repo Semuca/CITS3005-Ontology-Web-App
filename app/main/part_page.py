@@ -1,15 +1,11 @@
 from flask import render_template
-import rdflib
-from .views import main_bp, Link, domain
+from .views import main_bp, Link, domain, g
 
 @main_bp.route("/part/<part>")
 def part_page(part: str) -> str:
     """The part page"""
 
     uri = f"<{domain}part/{part}>"
-
-    g = rdflib.Graph()
-    g.parse("../graph.rdf", format="xml")
 
     label = list(g.query(f"""
         SELECT ?label

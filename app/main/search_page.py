@@ -1,14 +1,10 @@
 from flask import render_template
-import rdflib
 
-from .views import main_bp, Link
+from .views import main_bp, Link, g
 
 @main_bp.route("/")
 def search_page() -> str:
     """The search page"""
-
-    g = rdflib.Graph()
-    g.parse("../graph.rdf", format="xml")
 
     query = """
         SELECT DISTINCT ?step ?actions

@@ -1,14 +1,10 @@
 from flask import render_template
-import rdflib
 
-from .views import main_bp, domain, Link
+from .views import main_bp, domain, Link, g
 
 @main_bp.route("/tool/<tool>")
 def tool_page(tool: str) -> str:
     """The tool page"""
-
-    g = rdflib.Graph()
-    g.parse("../graph.rdf", format="xml")
 
     uri = f"<{domain}tool/{tool}>"
 

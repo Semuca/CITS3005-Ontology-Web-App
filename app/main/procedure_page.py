@@ -1,14 +1,10 @@
 from flask import render_template
-import rdflib
 
-from .views import main_bp, Link, domain
+from .views import main_bp, Link, domain, g
 
 @main_bp.route("/procedure/<procedure>")
 def procedure_page(procedure: str) -> str:
     """The procedure page"""
-
-    g = rdflib.Graph()
-    g.parse("../graph.rdf", format="xml")
 
     uri = f"<{domain}procedure/{procedure}>"
 
