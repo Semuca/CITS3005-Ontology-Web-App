@@ -1,7 +1,7 @@
 from flask import Flask
 
 from api import api_bp
-from main.views import main_bp
+from main import main_bp
 
 flask_app = Flask(__name__)
 
