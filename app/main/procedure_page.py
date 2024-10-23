@@ -28,20 +28,9 @@ def procedure_page(procedure: str) -> str:
 
     steps = []
     for result in g.query(stepsQuery):
-        id = result[0].split('/')[-1]
-        steps.append(Link(id, 'Step', f'/step/{id}'))
-
-    itemsQuery = f"""
-        SELECT ?item
-        WHERE {{
-            {uri} props:guideOf ?item .
-        }}
-    """
-
-    items = []
-    for result in g.query(itemsQuery):
-        id = result[0].split('/')[-1]
-        items.append(Link(id, 'Item', f'/item/{id}'))
+        ref = result[0]
+        id = ref.split('/')[-1]
+        steps.append(Link(ref, id, 'Step', f'/step/{id}'))
 
     partsQuery = f"""
         SELECT ?part
@@ -52,8 +41,9 @@ def procedure_page(procedure: str) -> str:
 
     parts = []
     for result in g.query(partsQuery):
-        id = result[0].split('/')[-1]
-        parts.append(Link(id, 'Part', f'/part/{id}'))
+        ref = result[0]
+        id = ref.split('/')[-1]
+        parts.append(Link(ref, id, 'Part', f'/part/{id}'))
 
     toolsQuery = f"""
         SELECT ?tool
@@ -64,7 +54,8 @@ def procedure_page(procedure: str) -> str:
 
     tools = []
     for result in g.query(toolsQuery):
-        id = result[0].split('/')[-1]
-        tools.append(Link(id, 'Tool', f'/tool/{id}'))
+        ref = result[0]
+        id = ref.split('/')[-1]
+        tools.append(Link(ref, id, 'Tool', f'/tool/{id}'))
 
-    return render_template('procedure.html', label=label, steps=steps, items=items, parts=parts, tools=tools)
+    return render_template('procedure.html', label=label, steps=steps, parts=parts, tools=tools)

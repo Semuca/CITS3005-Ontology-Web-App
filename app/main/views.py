@@ -1,5 +1,6 @@
 """Main route views"""
 
+from typing import Self
 from flask import Blueprint
 
 main_bp = Blueprint('main_bp', __name__)
@@ -14,7 +15,10 @@ class Link:
         'Tool': 'construction',
     }
 
-    def __init__(self, name: str, rdf_type: str, url: str) -> None:
+    def __init__(self: Self, uri: str, name: str, rdf_type: str, url: str) -> None:
+        self.uri = uri
+
+        # TODO: Remove this- URI has all the information we need
         self.name = name
         self.rdf_type = rdf_type
         self.url = url

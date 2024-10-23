@@ -20,8 +20,8 @@ def search_page() -> str:
     """
 
     results = []
-    for uri, actions in g.query(query):
-        id = uri.split('/')[-1]
-        results.append(Link(actions, 'Step', f'/step/{id}'))
+    for ref, actions in g.query(query):
+        id = ref.split('/')[-1]
+        results.append(Link(ref, actions, 'Step', f'/step/{id}'))
 
     return render_template('search.html', results=results)

@@ -28,8 +28,9 @@ def step_page(step: str) -> str:
 
     procedures = []
     for result in g.query(procedureQuery):
-        id = result[0].split('/')[-1]
-        procedures.append(Link(id, 'Procedure', f'/procedure/{id}'))
+        ref = result[0]
+        id = ref.split('/')[-1]
+        procedures.append(Link(ref, id, 'Procedure', f'/procedure/{id}'))
 
     toolQuery = f"""
         SELECT ?tool
@@ -40,7 +41,8 @@ def step_page(step: str) -> str:
 
     tools = []
     for result in g.query(toolQuery):
-        id = result[0].split('/')[-1]
-        tools.append(Link(id, 'Tool', f'/tool/{id}'))
+        ref = result[0]
+        id = ref.split('/')[-1]
+        tools.append(Link(ref, id, 'Tool', f'/tool/{id}'))
 
     return render_template('step.html', actions=actions, procedures=procedures, tools=tools)

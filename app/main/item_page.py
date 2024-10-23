@@ -6,20 +6,29 @@ from .views import main_bp, Link, domain
 def item_page(item: str) -> str:
     """The item page"""
 
+    uri = f"<{domain}item/{item}>"
+
     g = rdflib.Graph()
     g.parse("../graph.rdf", format="xml")
+
+    label = list(g.query(f"""
+        SELECT ?label
+        WHERE {{
+            {uri} rdfs:label ?label .
+        }}
+    """))[0][0]
 
     query = f"""
         SELECT ?procedure
         WHERE {{
-            ?procedure props:guideOf <{domain}item/{item}> .
+            ?procedure props:guideOf {uri} .
         }}
     """
 
     procedures = []
     for result in g.query(query):
-        uri = result[0]
-        id = uri.split('/')[-1]
-        procedures.append(Link(id, 'Procedure', f'/procedure/{id}'))
+        ref = result[0]
+        id = ref.split('/')[-1]
+        procedures.append(Link(ref, id, 'Procedure', f'/procedure/{id}'))
 
-    return render_template('item.html', procedures=procedures)
+    return render_template('item.html', label=label, procedures=procedures)
