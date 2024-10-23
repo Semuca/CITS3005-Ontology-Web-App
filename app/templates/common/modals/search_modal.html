@@ -1,6 +1,26 @@
 {% extends "common/modal.html" %}
 
 {% block content %}
-    <p>Search modal content goes here</p>
+    <div class="tabContainer">
+        <div class="tabs">
+            <button>Tab 1</button>
+            <button>Tab 2</button>
+            <button>Tab 3</button>
+        </div>
+
+        <div id="Tab1" class="tab-content active">
+            <h2>Content for Tab 1</h2>
+            <p>This is the content of Tab 1.</p>
+        </div>
+        <div id="Tab2" class="tab-content">
+            <h2>Content for Tab 2</h2>
+            <p>This is the content of Tab 2.</p>
+        </div>
+        <div id="Tab3" class="tab-content">
+            <h2>Content for Tab 3</h2>
+            <p>This is the content of Tab 3.</p>
+        </div>
+        <script type="module" src="{{ url_for('static', filename='js/tabs.js') }}"></script>
+    </div>
     <button id="searchButton">Search</button>
 {% endblock %}

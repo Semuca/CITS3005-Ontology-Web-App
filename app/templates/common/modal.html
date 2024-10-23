@@ -1,17 +1,26 @@
 
 <script type="module">
 const modal = document.getElementById("{{ keyword }}Modal");
-const closeModalButton = document.getElementById("{{ keyword }}Modal");
+
+const openModalButtons = document.getElementsByClassName("open{{ keyword | capitalize }}Button");
+const closeModalButton = document.getElementById("close{{ keyword | capitalize }}Button");
 
 closeModalButton.onclick = () => {
     modal.style.display = "none";
 }
 
-window.addEventListener("click", (event) => {
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-});
+for (let openModalButton of openModalButtons) {
+    openModalButton.addEventListener("click", (event) => {
+        modal.style.display = "block";
+        event.preventDefault();
+        event.stopPropagation();
+        window.onclick = (event) => {
+            if (!event.target.closest(".modal-content")) {
+                modal.style.display = "none";
+            }
+        };
+    });
+}
 </script>
 <div id="{{ keyword }}Modal" class="modal">
     <div class="modal-content">
