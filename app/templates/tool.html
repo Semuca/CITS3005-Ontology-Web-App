@@ -2,6 +2,12 @@
 
 {% block content %}
 
+<h2>Tool name:</h2>
+<p>{{ label }}</p>
+
+<h2>Supplier URL:</h2>
+<p>{{ supplier_url }}</p>
+
 <h2>This tool is used in procedures:</h2>
 {% with links=procedures %}
     {% include "common/links.html" %}
