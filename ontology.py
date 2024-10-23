@@ -13,6 +13,8 @@ with onto:
     class Step(Thing): pass
     class Image(Thing): pass
 
+    class OrderedStep(Thing): pass # To connect procedures to ordered steps
+
     # Procedure schema
     class subProcedureOf(ObjectProperty, TransitiveProperty):
         domain = [Procedure]
@@ -26,9 +28,17 @@ with onto:
         domain = [Procedure]
         range = [Item | Part]
 
-    # class hasSteps(ObjectProperty): # TODO work out how to add lists
-    #     domain = [Procedure]
-    #     range = [list] # List of Steps
+    class hasStep(ObjectProperty):
+        domain = [Procedure]
+        range = [OrderedStep]
+
+    class order(DataProperty):
+        domain = [OrderedStep]
+        range = [int]
+
+    class details(ObjectProperty):
+        domain = [OrderedStep]
+        range = [Step]
 
     # Item schema
     class subCategoryOf(ObjectProperty, TransitiveProperty):
@@ -94,12 +104,17 @@ def load_procedure(procedure_json: dict[str, str]):
     else:
         procedure_instance.guideOf.append(category_instance)
 
-    # hasSteps
+    # hasStep
     steps_list = []
     for step in procedure_json["Steps"]:
         step_instance = load_step(step)
         steps_list.append(step_instance)
-    # procedure_instance.hasSteps = steps_list # TODO work out how to add lists
+
+        order = step["Order"]
+        ordered_step_instance = onto.OrderedStep()
+        ordered_step_instance.details.append(step_instance)
+        ordered_step_instance.order.append(order)
+        procedure_instance.hasStep.append(ordered_step_instance)
 
     # subProcedureOf
     steps_set = set(steps_list)
