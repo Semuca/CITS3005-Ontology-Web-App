@@ -12,6 +12,13 @@ def procedure_page(procedure: str) -> str:
 
     uri = f"<{domain}procedure/{procedure}>"
 
+    label = list(g.query(f"""
+        SELECT ?label
+        WHERE {{
+            {uri} rdfs:label ?label .
+        }}
+    """))[0][0]
+
     stepsQuery = f"""
         SELECT ?step
         WHERE {{
@@ -60,4 +67,4 @@ def procedure_page(procedure: str) -> str:
         id = result[0].split('/')[-1]
         tools.append(Link(id, 'Tool', f'/tool/{id}'))
 
-    return render_template('procedure.html', steps=steps, items=items, parts=parts, tools=tools)
+    return render_template('procedure.html', label=label, steps=steps, items=items, parts=parts, tools=tools)

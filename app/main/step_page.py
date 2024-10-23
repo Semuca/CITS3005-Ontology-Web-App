@@ -12,14 +12,12 @@ def step_page(step: str) -> str:
 
     uri = f"<{domain}step/{step}>"
 
-    stepDetails = f"""
+    actions = list(g.query(f"""
         SELECT ?actions
         WHERE {{
             {uri} props:actions ?actions .
         }}
-    """
-
-    actions = list(g.query(stepDetails))[0][0]
+    """))[0][0]
 
     procedureQuery = f"""
         SELECT ?procedure
