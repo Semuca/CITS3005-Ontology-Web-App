@@ -19,7 +19,7 @@ with onto:
     class Image(Thing): pass
 
     # Procedure schema
-    class prerequisiteOf(ObjectProperty, TransitiveProperty):
+    class subProcedureOf(ObjectProperty, TransitiveProperty):
         domain = [Procedure]
         range = [Procedure]
 
@@ -30,6 +30,10 @@ with onto:
     class guideOf(ObjectProperty):
         domain = [Procedure]
         range = [Item | Part]
+
+    class hasSteps(ObjectProperty):
+        domain = [Procedure]
+        range = [Step] # Actually a list of steps
 
     # Item schema
     class subCategoryOf(ObjectProperty, TransitiveProperty):
@@ -52,10 +56,6 @@ with onto:
 
 
     # Step schema
-    class stepOf(ObjectProperty):
-        domain = [Step]
-        range = [Procedure]
-
     # class hasImage(ObjectProperty): - already defined in Tool schema
     #     domain = [Tool | Step]
     #     range = [Image]
@@ -63,10 +63,6 @@ with onto:
     class usesTool(ObjectProperty):
         domain = [Step]
         range = [Tool]
-
-    class number(DataProperty):
-        domain = [Step]
-        range = [int]
 
     class actions(DataProperty):
         domain = [Step]

@@ -1,5 +1,6 @@
 import json
-from rdflib import Graph, Literal, Namespace, RDF, RDFS, XSD
+from rdflib import RDFS, XSD
+from rdflib.graph import Graph, Literal, Namespace, RDF, BNode, Collection
 
 # Set up graph and namespaces
 domain = "http://ifixthat.org"
@@ -27,7 +28,7 @@ def to_uri(string: str | int) -> str:
     return string.replace(" ", "_")
 
 # Entity loading functions
-procedure_first_to_rest = {}
+procedure_to_steps = {}
 def load_procedure(procedure_json: dict[str, str]):
     # Create procedure and label
     procedure_uri = PROCEDURE[to_uri(procedure_json["Guidid"])]
@@ -49,22 +50,25 @@ def load_procedure(procedure_json: dict[str, str]):
     else:
         g.add((procedure_uri, PROPS.guideOf, category_uri))
 
-    # prerequisiteOf
+    # hasSteps
     steps_list = []
     for step in procedure_json["Steps"]:
-        load_step(step, procedure_json["Guidid"])
-        steps_list.append(step["StepId"])
+        step_uri = load_step(step)
+        steps_list.append(step_uri)
 
-    first_step = steps_list[0]
-    rest = steps_list[1:]
-    if first_step in procedure_first_to_rest:
-        for (other_id, other_rest) in procedure_first_to_rest.get(first_step, []):
-            if rest == other_rest[:len(rest)]: # this is a prefix of the other
-                g.add((procedure_uri, PROPS.prerequisiteOf, PROCEDURE[to_uri(other_id)]))
-            elif other_rest == rest[:len(other_rest)]: # the other is a prefix of this
-                g.add((PROCEDURE[to_uri(other_id)], PROPS.prerequisiteOf, procedure_uri))
+    steps_list_node = BNode()
+    Collection(g, steps_list_node, steps_list)
+    g.add((procedure_uri, PROPS.hasSteps, steps_list_node))
 
-    procedure_first_to_rest[first_step] = procedure_first_to_rest.get(first_step, []) + [(procedure_json["Guidid"], rest)]
+    # subProcedureOf
+    steps_set = set(steps_list)
+
+    for other_procedure_uri, other_steps_set in procedure_to_steps.items():
+        if steps_set.issubset(other_steps_set):
+            g.add((procedure_uri, PROPS.subProcedureOf, other_procedure_uri))
+        elif other_steps_set.issubset(steps_set):
+            g.add((other_procedure_uri, PROPS.subProcedureOf, procedure_uri))
+    procedure_to_steps[procedure_uri] = steps_set
 
 def load_item(item_name: str, ancestors: list[str]):
     # Create item and label
@@ -108,13 +112,10 @@ def load_tool(tool_json: dict[str, str]):
 
     return tool_uri
 
-def load_step(step_json: dict[str, str], procedure: int) -> str:
+def load_step(step_json: dict[str, str]) -> str:
     # Create step
     step_uri = STEP[to_uri(step_json["StepId"])]
     g.add((step_uri, RDF.type, PROPS.Step))
-
-    # stepOf
-    g.add((step_uri, PROPS.stepOf, PROCEDURE[to_uri(procedure)]))
 
     # hasImage
     for image in step_json["Images"]:
@@ -123,11 +124,10 @@ def load_step(step_json: dict[str, str], procedure: int) -> str:
 
     # usesTool
     for tool in step_json["Tools_extracted"]:
+        if tool == "NA":
+            break
         g.add((step_uri, PROPS.usesTool, TOOL[to_uri(tool)]))
         # Q: Need to check for tool existence?
-
-    # index
-    g.add((step_uri, PROPS.number, Literal(step_json["Order"], datatype=XSD.integer)))
 
     # actions
     g.add((step_uri, PROPS.actions, Literal(step_json["Text_raw"])))
@@ -152,6 +152,6 @@ with open("Game Console.json") as file:
         load_procedure(procedure_json)
 
 # Serialize graph to file
-g.serialize("graph.rdf", format="xml", encoding="utf-8")
+g.serialize("graph.ttl", format="ttl", encoding="utf-8")
 
 
