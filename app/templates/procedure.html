@@ -2,13 +2,11 @@
 
 {% block content %}
 
+<h2>Procedure name:</h2>
+<p>{{ label }}</p>
+
 <h2>This procedure has steps:</h2>
 {% with links=steps %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-<h2>This procedure is for items:</h2>
-{% with links=items %}
     {% include "common/links.html" %}
 {% endwith %}
 
