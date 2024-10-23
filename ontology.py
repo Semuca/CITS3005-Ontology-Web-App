@@ -1,11 +1,18 @@
 import json
 from owlready2 import *
 
-# Set up graph and namespaces
+# Set up ontology classes and properties
 DOMAIN = "http://ifixthat.org/"
-onto = get_ontology(DOMAIN)
+ifixthat = get_ontology(DOMAIN)
 
-with onto:
+procedure_ns = ifixthat.get_namespace(DOMAIN + "Procedure")
+item_ns = ifixthat.get_namespace(DOMAIN + "Item")
+part_ns = ifixthat.get_namespace(DOMAIN + "Part")
+tool_ns = ifixthat.get_namespace(DOMAIN + "Tool")
+step_ns = ifixthat.get_namespace(DOMAIN + "Step")
+image_ns = ifixthat.get_namespace(DOMAIN + "Image")
+
+with ifixthat:
     class Procedure(Thing): pass
     class Item(Thing): pass
     class Part(Thing): pass
@@ -86,7 +93,7 @@ procedure_to_steps = {}
 def load_procedure(procedure_json: dict[str, str]):
     # Create procedure and label
     procedure_id = to_uri(procedure_json["Guidid"])
-    procedure_instance = onto.Procedure(procedure_id)
+    procedure_instance = ifixthat.Procedure(procedure_id, namespace=procedure_ns)
     procedure_instance.label = procedure_json["Title"]
 
     # requiresTool
@@ -111,7 +118,7 @@ def load_procedure(procedure_json: dict[str, str]):
         steps_list.append(step_instance)
 
         order = step["Order"]
-        ordered_step_instance = onto.OrderedStep()
+        ordered_step_instance = ifixthat.OrderedStep()
         ordered_step_instance.details.append(step_instance)
         ordered_step_instance.order.append(order)
         procedure_instance.hasStep.append(ordered_step_instance)
@@ -128,7 +135,7 @@ def load_procedure(procedure_json: dict[str, str]):
 def load_item(item_name: str, ancestors: list[str]):
     # Create item and label
     item_id = to_uri(item_name)
-    item_instance = onto.Item(item_id)
+    item_instance = ifixthat.Item(item_id, namespace=item_ns)
     item_instance.label = item_name
 
     # subCategoryOf
@@ -142,11 +149,11 @@ def load_item(item_name: str, ancestors: list[str]):
 def load_part(item_name: str, part_name: str) -> Part:
     # Create part and label
     part_id = to_uri(f"{item_name} {part_name}")
-    part_instance = onto.Part(part_id)
+    part_instance = ifixthat.Part(part_id, namespace=part_ns)
     part_instance.label = part_name
 
     # partOf
-    item_instance = onto.Item(to_uri(item_name))
+    item_instance = ifixthat.Item(to_uri(item_name), namespace=item_ns)
     part_instance.partOf.append(item_instance)
 
     return part_instance
@@ -154,7 +161,7 @@ def load_part(item_name: str, part_name: str) -> Part:
 def load_tool(tool_json: dict[str, str]) -> Tool:
     # Create tool and label
     tool_id = to_uri(tool_json["Name"])
-    tool_instance = onto.Tool(tool_id)
+    tool_instance = ifixthat.Tool(tool_id, namespace=tool_ns)
     tool_instance.label = tool_json["Name"]
 
     # hasImage
@@ -173,7 +180,7 @@ def load_tool(tool_json: dict[str, str]) -> Tool:
 def load_step(step_json: dict[str, str]) -> Step:
     # Create step and label
     step_id = to_uri(step_json["StepId"])
-    step_instance = onto.Step(step_id)
+    step_instance = ifixthat.Step(step_id, namespace=step_ns)
 
     # hasImage
     for image in step_json["Images"]:
@@ -184,7 +191,7 @@ def load_step(step_json: dict[str, str]) -> Step:
     for tool in step_json["Tools_extracted"]:
         if tool == "NA":
             continue
-        tool_instance = onto.Tool(to_uri(tool))
+        tool_instance = ifixthat.Tool(to_uri(tool), namespace=tool_ns)
         step_instance.usesTool.append(tool_instance)
 
     # actions
@@ -199,7 +206,7 @@ def load_image(url: str) -> Image:
         return url_to_image[url]
 
     # Create image
-    image_instance = onto.Image()
+    image_instance = ifixthat.Image(namespace=image_ns)
 
     # dataUrl
     image_instance.dataUrl.append(url)
@@ -214,4 +221,4 @@ with open("Game Console.json") as file:
         load_procedure(procedure_json)
 
 # Serialize ontology to file
-onto.save(file="ontology.owl", format="rdfxml")
+ifixthat.save(file="ontology.owl", format="rdfxml")
