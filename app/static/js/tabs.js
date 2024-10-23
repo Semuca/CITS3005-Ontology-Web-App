@@ -1,6 +1,9 @@
-function openTab(event, tabName) {
+function openTab(event, tabContainer, tabName) {
+    // Get tab container
+    const container = document.getElementById(tabContainer);
+
     // Hide all tab content
-    const tabContents = document.querySelectorAll('.tab-content');
+    const tabContents = container.querySelectorAll('.tab-content');
     tabContents.forEach(content => {
         content.classList.remove('active');
     });
