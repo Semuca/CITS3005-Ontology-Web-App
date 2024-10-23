@@ -1,6 +1,7 @@
 """Main route views"""
 
 from flask import Blueprint, render_template
+import rdflib
 
 main_bp = Blueprint('main_bp', __name__)
 
@@ -42,15 +43,47 @@ tools = [
     Link('Tool 1', 'Tool', '/tool/1'),
 ]
 
+
+domain = "http://ifixthat.org/"
+g = rdflib.Graph()
+g.parse("../graph.rdf", format="xml")
+
 @main_bp.route("/")
 def search_page() -> str:
     """The search page"""
 
-    return render_template('search.html', results=items+parts+procedures+steps+tools)
+    query = """
+        SELECT DISTINCT ?step ?actions
+        WHERE {
+            ?step rdf:type ?type .
+            ?step props:actions ?actions .
+        }
+        LIMIT 10
+    """
+
+    results = []
+    for uri, actions in g.query(query):
+        id = uri.split('/')[-1]
+        results.append(Link(actions, 'Step', f'/step/{id}'))
+
+    return render_template('search.html', results=results)
 
 @main_bp.route("/item/<item>")
 def item_page(item: str) -> str:
     """The item page"""
+
+    query = f"""
+        SELECT ?procedure
+        WHERE {{
+            ?procedure props:guideOf <{domain}item/{item}> .
+        }}
+    """
+
+    procedures = []
+    for result in g.query(query):
+        uri = result[0]
+        id = uri.split('/')[-1]
+        procedures.append(Link(id, 'Procedure', f'/procedure/{id}'))
 
     return render_template('item.html', procedures=procedures)
 
@@ -58,11 +91,74 @@ def item_page(item: str) -> str:
 def part_page(part: str) -> str:
     """The part page"""
 
+    query = f"""
+        SELECT ?procedure
+        WHERE {{
+            <{domain}part/{part}> props:stepOf ?procedure .
+        }}
+    """
+
+    procedures = []
+    for result in g.query(query):
+        uri = result[0]
+        id = uri.split('/')[-1]
+        procedures.append(Link(id, 'Procedure', f'/procedure/{id}'))
+
     return render_template('part.html', procedures=procedures)
 
 @main_bp.route("/procedure/<procedure>")
 def procedure_page(procedure: str) -> str:
     """The procedure page"""
+
+    uri = f"<{domain}procedure/{procedure}>"
+
+    stepsQuery = f"""
+        SELECT ?step
+        WHERE {{
+            ?step props:stepOf {uri} .
+        }}
+    """
+
+    steps = []
+    for result in g.query(stepsQuery):
+        id = result[0].split('/')[-1]
+        steps.append(Link(id, 'Step', f'/step/{id}'))
+
+    itemsQuery = f"""
+        SELECT ?item
+        WHERE {{
+            {uri} props:guideOf ?item .
+        }}
+    """
+
+    items = []
+    for result in g.query(itemsQuery):
+        id = result[0].split('/')[-1]
+        items.append(Link(id, 'Item', f'/item/{id}'))
+
+    partsQuery = f"""
+        SELECT ?part
+        WHERE {{
+            {uri} props:guideOf ?part .
+        }}
+    """
+
+    parts = []
+    for result in g.query(partsQuery):
+        id = result[0].split('/')[-1]
+        parts.append(Link(id, 'Part', f'/part/{id}'))
+
+    toolsQuery = f"""
+        SELECT ?tool
+        WHERE {{
+            {uri} props:requiresTool ?tool .
+        }}
+    """
+
+    tools = []
+    for result in g.query(toolsQuery):
+        id = result[0].split('/')[-1]
+        tools.append(Link(id, 'Tool', f'/tool/{id}'))
 
     return render_template('procedure.html', steps=steps, items=items, parts=parts, tools=tools)
 
@@ -70,10 +166,36 @@ def procedure_page(procedure: str) -> str:
 def step_page(step: str) -> str:
     """The step page"""
 
+    query = f"""
+        SELECT ?procedure
+        WHERE {{
+            <{domain}step/{step}> props:stepOf ?procedure .
+        }}
+    """
+
+    procedures = []
+    for result in g.query(query):
+        uri = result[0]
+        id = uri.split('/')[-1]
+        procedures.append(Link(id, 'Procedure', f'/procedure/{id}'))
+
     return render_template('step.html', procedures=procedures)
 
 @main_bp.route("/tool/<tool>")
 def tool_page(tool: str) -> str:
     """The tool page"""
+
+    query = f"""
+        SELECT ?procedure
+        WHERE {{
+            ?procedure props:requiresTool <{domain}tool/{tool}> .
+        }}
+    """
+
+    procedures = []
+    for result in g.query(query):
+        uri = result[0]
+        id = uri.split('/')[-1]
+        procedures.append(Link(id, 'Procedure', f'/procedure/{id}'))
 
     return render_template('tool.html', procedures=procedures)
