@@ -1,13 +1,10 @@
-const deleteModal = document.getElementById("deleteModal");
 const openDeleteModalButtons = document.getElementsByClassName("openDeleteButton");
 
 let uriToDelete = "";
 
 for (let openDeleteModalButton of openDeleteModalButtons) {
     openDeleteModalButton.addEventListener("click", (event) => {
-        deleteModal.style.display = "block";
         uriToDelete = event.target.getAttribute("data-uri");
-        event.preventDefault();
     });
 }
 

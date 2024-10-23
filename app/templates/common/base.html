@@ -3,21 +3,26 @@
     <head>
         <meta charset="UTF-8">
         <title>Search</title>
+
         <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/base.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/tabs.css') }}">
+
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
         <script type="module" src="{{ url_for('static', filename='js/search.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/add.js') }}"></script>
         <script type="module" src="{{ url_for('static', filename='js/delete.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/tabs.js') }}"></script>
     </head>
     <body>
         <div style="background-color: dodgerblue; color: white">
             <div style="display: flex; justify-content: space-between; align-items: center; margin: auto 10px">
                 <div style="display: flex; align-items: center; gap: 16px;">
                     <h1>IFixit Knowledge Base</h1>
-                    <button id="openAddButton">Add item</button>
+                    <button class="openAddButton">Add item</button>
                 </div>
-                <button id="openSearchButton">Search</button>
+                <button class="openSearchButton">Search</button>
             </div>
         </div>
 

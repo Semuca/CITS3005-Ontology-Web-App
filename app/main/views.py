@@ -9,11 +9,11 @@ main_bp = Blueprint('main_bp', __name__)
 class Link:
 
     type_to_icon_map = {
-        'Item': 'category',
-        'Part': 'toys_and_games',
-        'Procedure': 'receipt_long',
-        'Step': 'stairs_2',
-        'Tool': 'construction',
+        'item': 'category',
+        'part': 'toys_and_games',
+        'procedure': 'receipt_long',
+        'step': 'stairs_2',
+        'tool': 'construction',
     }
 
     def __init__(self: Self, uri: str, name: str, rdf_type: str, url: str) -> None:

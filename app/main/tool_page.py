@@ -23,16 +23,16 @@ def tool_page(tool: str) -> str:
     """))[0][0]
 
     query = f"""
-        SELECT ?procedure
+        SELECT ?procedure ?label
         WHERE {{
             ?procedure props:requiresTool {uri} .
+            ?procedure rdfs:label ?label .
         }}
     """
 
     procedures = []
-    for result in g.query(query):
-        ref = result[0]
+    for ref, tool_label in g.query(query):
         id = ref.split('/')[-1]
-        procedures.append(Link(ref, id, 'Procedure', f'/procedure/{id}'))
+        procedures.append(Link(ref, tool_label, 'Procedure', f'/procedure/{id}'))
 
     return render_template('tool.html', label=label, supplier_url=supplier_url, procedures=procedures)
