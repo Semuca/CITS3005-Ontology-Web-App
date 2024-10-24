@@ -35,20 +35,18 @@ if (document.getElementsByClassName('link').length === pageSize) {
 const searchButton = document.getElementById("searchButton");
 
 searchButton.addEventListener("click", () => {
+    const _url = new URL(window.location.href, window.location.origin);
+
     const tabContainer = document.getElementById("search-tabs");
     const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
 
-    const query = [];
-
     const type = selectedTabWindow.getAttribute("data-rdf-type");
-    query.push(`rdf_type=props:${type}`);
+    _url.searchParams.set('rdf_type', `props:${type}`);
 
     const searchInput = selectedTabWindow.querySelector('#searchInput');
     if (searchInput.value) {
-        query.push(`name=${searchInput.value}`);
+        _url.searchParams.set('name', searchInput.value);
     }
 
-    const queryString = `?${query.join('&')}`;
-
-    window.location.href = queryString;
+    window.location.href = _url.toString();
 });
