@@ -21,6 +21,6 @@ def create_entry():
     g.add((uri, RDF.type, URIRef(f'{domain}properties/{rdf_type.capitalize()}')))
     g.add((uri, RDFS.label, Literal(label)))
 
-    g.serialize('../graph.ttl', format='turtle')
+    g.serialize('../ontology.owl', format='xml')
 
     return 'Entry created', 201

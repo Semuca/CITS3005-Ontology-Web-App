@@ -49,7 +49,7 @@ searchButton.addEventListener("click", () => {
     const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
 
     const type = selectedTabWindow.getAttribute("data-rdf-type");
-    _url.searchParams.set('rdf_type', `props:${type}`);
+    _url.searchParams.set('rdf_type', `ifixthat:${type}`);
 
     const searchInput = selectedTabWindow.querySelector('#searchInput');
     if (searchInput.value) {

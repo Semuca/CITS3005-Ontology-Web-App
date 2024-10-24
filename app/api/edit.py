@@ -19,6 +19,6 @@ def edit_entry():
 
     g.add((uri, property, new_value))
 
-    g.serialize('../graph.ttl', format='turtle')
+    g.serialize('../ontology.owl', format='xml')
 
     return 'Entry edited', 200

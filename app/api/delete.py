@@ -17,6 +17,6 @@ def delete_entry():
 
     g.remove((rdflib.URIRef(uri), None, None))
 
-    g.serialize(destination="../graph.rdf", format="xml")
+    g.serialize(destination="../ontology.owl", format="xml")
 
     return 'Entry deleted', 200

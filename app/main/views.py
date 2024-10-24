@@ -2,7 +2,7 @@
 
 from typing import Self
 from flask import Blueprint
-import rdflib
+from owlready2 import get_ontology, default_world
 
 main_bp = Blueprint('main_bp', __name__)
 
@@ -18,7 +18,7 @@ class Link:
 
     def __init__(self: Self, uri: str, title: str = None, subtitle: str = None) -> None:
         self.uri = uri
-        url = self.uri.removeprefix("http://ifixthat.org/")
+        url = self.uri.removeprefix(domain)
 
         self.url = '/' + url
         self.rdf_type = url.split('/')[0]
@@ -29,7 +29,14 @@ class Link:
 
         self.icon = self.type_to_icon_map.get(self.rdf_type, 'help')
 
-domain = "http://ifixthat.org/"
+get_ontology("../ontology.owl").load()
+g = default_world.as_rdflib_graph()
 
-g = rdflib.Graph()
-g.parse("../graph.rdf", format="xml")
+domain = "http://ifixthat.org/"
+g.bind("ifixthat", domain)
+g.bind("procedure", f"{domain}Procedure#")
+g.bind("item", f"{domain}Item#")
+g.bind("part", f"{domain}Part#")
+g.bind("tool", f"{domain}Tool#")
+g.bind("step", f"{domain}Step#")
+g.bind("image", f"{domain}Image#")
