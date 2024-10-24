@@ -14,4 +14,4 @@ def image_page(image: str) -> str:
     tools_of_item = ifixthat.search(type=ifixthat.Tool, hasImage=image_instance)
     tools = [Link(tool) for tool in tools_of_item]
 
-    return render_template('image.html', url=url, steps=steps, tools=tools)
+    return render_template('image.html', uri=image_instance.iri, url=url, steps=steps, tools=tools)

@@ -1,32 +1,24 @@
-{% extends "common/base.html" %}
-
-{% block content %}
+{% extends "common/base.html" %} {% block content %}
 
 <h2>Image url:</h2>
-<p contenteditable="true" data-property="http://www.w3.org/2000/01/rdf-schema#label">{{ url }}</p>
+<p
+	contenteditable="true"
+	data-uri="{{ uri }}"
+	data-property="http://ifixthat.org/dataUrl"
+>
+	{{ url }}
+</p>
 
 <img src="{{ url }}" />
 
 {% if steps %}
-    <h2>This image is in steps:</h2>
+<h2>This image is in steps:</h2>
 {% else %}
-    <h2>This image is not in any steps:</h2>
-{% endif %}
-
-{% with links=steps %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-
-{% if tools %}
-    <h2>This image is in tools:</h2>
+<h2>This image is not in any steps:</h2>
+{% endif %} {% with links=steps %} {% include "common/links.html" %} {% endwith
+%} {% if tools %}
+<h2>This image is in tools:</h2>
 {% else %}
-    <h2>This image is not in any tools:</h2>
-{% endif %}
-
-{% with links=tools %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-
-{% endblock %}
+<h2>This image is not in any tools:</h2>
+{% endif %} {% with links=tools %} {% include "common/links.html" %} {% endwith
+%} {% endblock %}
