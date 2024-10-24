@@ -15,6 +15,9 @@ def procedure_page(procedure: str) -> str:
     for step in procedure_instance.hasStep:
         step_ref = step.details[0]
         step_actions = step_ref.actions[0]
-        steps.append(Link(step_ref, subtitle=step_actions))
+        steps.append((step_ref, step_actions))
+
+    steps.sort(key=lambda x: x[0].order)
+    steps = [Link(step_ref, subtitle=step_actions) for step_ref, step_actions in steps]
 
     return render_template('procedure.html', label=label, steps=steps, parts=parts, tools=tools)

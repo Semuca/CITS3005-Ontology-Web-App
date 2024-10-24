@@ -18,6 +18,7 @@ class Link:
 
     def __init__(self: Self, thing: any, title: str = None, subtitle: str = None) -> None:
         self.ref = thing
+        self.uri = thing.iri
 
         self.rdf_type = thing.is_a[0].name
         self.url = "/" + self.rdf_type + "/" + thing.iri.split("#")[-1]
