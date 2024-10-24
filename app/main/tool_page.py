@@ -32,7 +32,6 @@ def tool_page(tool: str) -> str:
 
     procedures = []
     for ref, tool_label in g.query(query):
-        id = ref.split('/')[-1]
-        procedures.append(Link(ref, tool_label, 'Procedure', f'/procedure/{id}'))
+        procedures.append(Link(ref, title=tool_label))
 
     return render_template('tool.html', label=label, supplier_url=supplier_url, procedures=procedures)

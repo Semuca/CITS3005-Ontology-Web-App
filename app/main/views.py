@@ -9,22 +9,25 @@ main_bp = Blueprint('main_bp', __name__)
 class Link:
 
     type_to_icon_map = {
-        'Item': 'category',
-        'Part': 'toys_and_games',
-        'Procedure': 'receipt_long',
-        'Step': 'stairs_2',
-        'Tool': 'construction',
+        'item': 'category',
+        'part': 'toys_and_games',
+        'procedure': 'receipt_long',
+        'step': 'stairs_2',
+        'tool': 'construction',
     }
 
-    def __init__(self: Self, uri: str, name: str, rdf_type: str, url: str) -> None:
+    def __init__(self: Self, uri: str, title: str = None, subtitle: str = None) -> None:
         self.uri = uri
+        url = self.uri.removeprefix("http://ifixthat.org/")
 
-        # TODO: Remove this- URI has all the information we need
-        self.name = name
-        self.rdf_type = rdf_type
-        self.url = url
+        self.url = '/' + url
+        self.rdf_type = url.split('/')[0]
+        self.name = url.removeprefix(f"{self.rdf_type}/")
 
-        self.icon = self.type_to_icon_map.get(rdf_type, 'help')
+        self.title = title or self.name
+        self.subtitle = subtitle or self.rdf_type
+
+        self.icon = self.type_to_icon_map.get(self.rdf_type, 'help')
 
 domain = "http://ifixthat.org/"
 

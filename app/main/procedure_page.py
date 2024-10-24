@@ -7,6 +7,7 @@ def procedure_page(procedure: str) -> str:
     """The procedure page"""
 
     uri = f"<{domain}procedure/{procedure}>"
+    print(uri)
 
     label = list(g.query(f"""
         SELECT ?label
@@ -25,8 +26,7 @@ def procedure_page(procedure: str) -> str:
 
     steps = []
     for ref, actions in g.query(stepsQuery):
-        id = ref.split('/')[-1]
-        steps.append(Link(ref, actions, 'Step', f'/step/{id}'))
+        steps.append(Link(ref, subtitle=actions))
 
     subjectQuery = f"""
         SELECT ?subject ?type
@@ -38,11 +38,10 @@ def procedure_page(procedure: str) -> str:
 
     parts = []
     for ref, rdf_type in g.query(subjectQuery):
-        id = ref.split('/')[-1]
         if str(rdf_type) == f'{domain}properties/Part':
-            parts.append(Link(ref, id, 'Part', f'/part/{id}'))
+            parts.append(Link(ref))
         else:
-            parts.append(Link(ref, id, 'Item', f'/item/{id}'))
+            parts.append(Link(ref))
 
     toolsQuery = f"""
         SELECT ?tool ?label
@@ -54,7 +53,6 @@ def procedure_page(procedure: str) -> str:
 
     tools = []
     for ref, tool_label in g.query(toolsQuery):
-        id = ref.split('/')[-1]
-        tools.append(Link(ref, tool_label, 'Tool', f'/tool/{id}'))
+        tools.append(Link(ref, title=tool_label))
 
     return render_template('procedure.html', label=label, steps=steps, parts=parts, tools=tools)

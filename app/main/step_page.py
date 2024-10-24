@@ -25,8 +25,7 @@ def step_page(step: str) -> str:
 
     procedures = []
     for ref, label in g.query(procedureQuery):
-        id = ref.split('/')[-1]
-        procedures.append(Link(ref, label, 'Procedure', f'/procedure/{id}'))
+        procedures.append(Link(ref, title=label))
 
     toolQuery = f"""
         SELECT ?tool ?label
@@ -38,7 +37,6 @@ def step_page(step: str) -> str:
 
     tools = []
     for ref, label in g.query(toolQuery):
-        id = ref.split('/')[-1]
-        tools.append(Link(ref, label, 'Tool', f'/tool/{id}'))
+        tools.append(Link(ref, title=label))
 
     return render_template('step.html', actions=actions, procedures=procedures, tools=tools)

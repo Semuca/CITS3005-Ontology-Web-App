@@ -24,7 +24,6 @@ def item_page(item: str) -> str:
 
     procedures = []
     for ref, procedure_label in g.query(query):
-        id = ref.split('/')[-1]
-        procedures.append(Link(ref, procedure_label, 'Procedure', f'/procedure/{id}'))
+        procedures.append(Link(ref, title=procedure_label))
 
     return render_template('item.html', label=label, procedures=procedures)
