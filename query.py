@@ -1,86 +1,99 @@
-import rdflib
+from owlready2 import *
 
-# Load the ontology into RDFLib
-g = rdflib.Graph()
-g.parse("data.rdf", format="ttl")
+# Load the ontology as RDFLib graph
+ifixthat = get_ontology("ontology.owl").load()
+graph = default_world.as_rdflib_graph()
 
-# Query for 'What guides have 6 or more steps?'
-querySixOrMoreParts = """
-    SELECT ?guide (COUNT(?step) AS ?stepCount)
+DOMAIN = "http://ifixthat.org/"
+graph.bind("ifixthat", DOMAIN)
+graph.bind("procedure", f"{DOMAIN}Procedure#")
+graph.bind("item", f"{DOMAIN}Item#")
+graph.bind("part", f"{DOMAIN}Part#")
+graph.bind("tool", f"{DOMAIN}Tool#")
+graph.bind("step", f"{DOMAIN}Step#")
+graph.bind("image", f"{DOMAIN}Image#")
+
+# Helper functions
+def parse_output_row(row):
+    return [value.toPython() for value in row]
+
+# Query for 'What Procedures have more than 6 steps?'
+query_more_than_6_steps = """
+    SELECT ?procedure (COUNT(?orderedStep) AS ?stepCount)
     WHERE {
-        ?step rdf:type ifixit:step .
-        ?step ifixit:stepOf ?guide .
+        ?procedure a ifixthat:Procedure .
+        ?procedure ifixthat:hasStep ?orderedStep .
     }
-    GROUP BY ?guide
-    HAVING (COUNT(?step) >= 6)
+    GROUP BY ?procedure
+    HAVING (COUNT(?orderedStep) > 6)
 """
 
-print("\nQuery for 'What guides have 6 or more steps?'")
-for row in g.query(querySixOrMoreParts):
-    print(row)
+print("\nQuery for 'What Procedures have more than 6 steps?'")
+for row in graph.query(query_more_than_6_steps):
+    print(parse_output_row(row))
 
-# Query for 'What items have 10 or more guides written for them?'
-queryTenOrMoreGuides = """
-    SELECT ?category (COUNT(?guide) AS ?guideCount)
+# Query for 'What Items have more than 10 procedures written for them?'
+query_more_than_10_procedures = """
+    SELECT ?item (COUNT(?procedure) AS ?procedureCount)
     WHERE {
-        ?category rdf:type ifixit:category .
-        ?guide ifixit:guideOf ?category .
+        ?item a ifixthat:Item .
+        ?procedure ifixthat:guideOf ?item .
     }
-    GROUP BY ?category
-    HAVING (COUNT(?guide) >= 10)
+    GROUP BY ?item
+    HAVING (COUNT(?procedure) > 10)
 """
 
-print("\nQuery for 'What items have 10 or more guides written for them?'")
-for row in g.query(queryTenOrMoreGuides):
-    print(row)
+print("\nQuery for 'What Items have more than 10 procedures written for them?'")
+for row in graph.query(query_more_than_10_procedures):
+    print(parse_output_row(row))
 
-# Query for 'What procedures include a tool that is never mentioned in the procedure steps?'
-queryUnmentionedTools = """
-    SELECT DISTINCT ?guide ?toolName
+# Query for 'What procedures include a tool that is never included in its steps?'
+query_unmentioned_tools = """
+    SELECT ?procedure ?tool
     WHERE {
-        ?guide rdf:type ifixit:guide .
-        ?unusedTool rdf:type ifixit:tool .
-        ?unusedTool ifixit:name ?unusedToolName .
-
-        # # Remove tools that are substrings of used tools
-        # MINUS {
-        #     ?tool rdf:type ifixit:tool .
-        #     ?tool ifixit:toolOf ?guide .
-        #     ?tool ifixit:name ?toolName .
-
-        #     FILTER(CONTAINS(?toolName, ?unusedToolName))
-        # }
-    
-        # Remove tools that are used in the guide
-        MINUS {
-            ?unusedTool ifixit:toolOf ?guide .
+        ?procedure a ifixthat:Procedure .
+        ?procedure ifixthat:requiresTool ?tool .
+        FILTER NOT EXISTS {
+            ?procedure ifixthat:hasStep ?orderedStep .
+            ?orderedStep ifixthat:details ?step .
+            ?step ifixthat:usesTool ?tool .
         }
-
-        ?step ifixit:stepOf ?guide .
-        ?line ifixit:lineOf ?step .
-        ?line ifixit:rawText ?rawText .
-
-        FILTER(CONTAINS(?rawText, ?unusedToolName))
     }
 """
 
-print("\nQuery for 'What procedures include a tool that is never mentioned in the procedure steps?'")
-for row in g.query(queryUnmentionedTools):
-    print(row)
+print("\nQuery for 'What procedures include a tool that is never included in its steps?'")
+for row in graph.query(query_unmentioned_tools):
+    print(parse_output_row(row))
 
-# Query for 'What procedures include the words 'careful' or 'dangerous' in the raw text of a step line?'
-queryCarefulOrDangerous = """
-    SELECT DISTINCT ?guide
+# Query for 'What procedures include the words 'careful' or 'dangerous' in their steps?'
+query_careful_or_dangerous = """
+    SELECT ?procedure ?step ?actions
     WHERE {
-        ?guide rdf:type ifixit:guide .
-        ?step ifixit:stepOf ?guide .
-        ?line ifixit:lineOf ?step .
-        ?line ifixit:rawText ?rawText .
-
-        FILTER(CONTAINS(?rawText, "careful") || CONTAINS(?rawText, "dangerous"))
+        ?procedure a ifixthat:Procedure .
+        ?procedure ifixthat:hasStep ?orderedStep .
+        ?orderedStep ifixthat:details ?step .
+        ?step ifixthat:actions ?actions .
+        FILTER(CONTAINS(?actions, 'careful') || CONTAINS(?actions, 'dangerous'))
     }
 """
 
-print("\nQuery for 'What procedures include the words 'careful' or 'dangerous' in the raw text of a step line?'")
-for row in g.query(queryCarefulOrDangerous):
-    print(row)
+print("\nQuery for 'What procedures include the words 'careful' or 'dangerous' in their steps?'")
+for row in graph.query(query_careful_or_dangerous):
+    print(parse_output_row(row))
+
+# Query for 'What are the step ids in order for Procedure 1562 and their actions?'
+query_ordered_step_actions = """
+    SELECT ?order ?step ?actions
+    WHERE {
+        procedure:1562 ifixthat:hasStep ?orderedStep .
+        ?orderedStep ifixthat:details ?step .
+        ?orderedStep ifixthat:order ?order .
+        ?step ifixthat:actions ?actions .
+    }
+    ORDER BY ?order
+"""
+
+print("\nQuery for 'What are the step ids in order for Procedure 1562 and their actions?'")
+for row in graph.query(query_ordered_step_actions):
+    print(parse_output_row(row))
+
