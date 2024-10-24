@@ -3,7 +3,7 @@
 {% block content %}
 
 <h2>Procedure name:</h2>
-<p>{{ label }}</p>
+<p contenteditable="true" data-property="http://www.w3.org/2000/01/rdf-schema#label">{{ label }}</p>
 
 <h2>This procedure has steps:</h2>
 {% with links=steps %}
