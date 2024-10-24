@@ -1,9 +1,9 @@
 """Defines endpoint for creating entries"""
 
 from flask import request
-import rdflib
 from .bp import api_bp
-from main.views import g
+from main.views import ifixthat
+from owlready2 import *
 
 @api_bp.route('/', methods=['DELETE'])
 def delete_entry():
@@ -15,8 +15,9 @@ def delete_entry():
     if not uri:
         return 'URI not provided', 400
 
-    g.remove((rdflib.URIRef(uri), None, None))
+    instance = ifixthat.search_one(iri=uri)
+    destroy_entity(instance)
 
-    g.serialize(destination="../ontology.owl", format="xml")
+    ifixthat.save(file="../ontology.owl", format="rdfxml")
 
     return 'Entry deleted', 200
