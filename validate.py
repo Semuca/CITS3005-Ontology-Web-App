@@ -13,7 +13,6 @@ conforms, results_graph, results_text = validate(
     knowledge_graph,
     shacl_graph=shacl_graph,
     inference='none',
-    debug=True
 )
 
-print(results_text)
+print(f"\n{results_text}")
