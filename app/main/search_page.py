@@ -14,20 +14,19 @@ def search_page() -> str:
 
     # Oooooooh sparql injections can be done here spoooooky
     query = f"""
-        SELECT DISTINCT ?entity ?label
+        SELECT DISTINCT ?entity ?type ?label
         WHERE {{
             ?entity rdf:type {rdf_type} .
+            ?entity rdf:type ?type .
             ?entity rdfs:label ?label .
             FILTER REGEX(?label, "{search}", "i")
         }}
         LIMIT {pageSize} OFFSET {(page - 1) * pageSize}
     """
 
-    print(query)
-
     results = []
-    for ref, label in g.query(query):
-        result_rdf_type = ref.split('/')[-2]
+    for ref, _type, label in g.query(query):
+        result_rdf_type = _type.split('/')[-1]
         id = ref.split('/')[-1]
         results.append(Link(ref, label, result_rdf_type, f'/{result_rdf_type.lower()}/{id}'))
 
