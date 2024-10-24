@@ -5,22 +5,44 @@
 <h2>Item name:</h2>
 <p contenteditable="true" data-property="http://www.w3.org/2000/01/rdf-schema#label">{{ label }}</p>
 
-<h2>This item has parents:</h2>
+{% if categoryParents %}
+    <h2>This item has parents:</h2>
+{% else %}
+    <h2>This item has no parents:</h2>
+{% endif %}
+
 {% with links=categoryParents %}
     {% include "common/links.html" %}
 {% endwith %}
 
-<h2>This item has children:</h2>
+
+{% if categoryChildren %}
+    <h2>This item has children:</h2>
+{% else %}
+    <h2>This item has no children:</h2>
+{% endif %}
+
 {% with links=categoryChildren %}
     {% include "common/links.html" %}
 {% endwith %}
 
-<h2>This item has parts:</h2>
+
+{% if parts %}
+    <h2>This item has parts:</h2>
+{% else %}
+    <h2>This item has no parts:</h2>
+{% endif %}
+
 {% with links=parts %}
     {% include "common/links.html" %}
 {% endwith %}
 
-<h2>This item has procedures:</h2>
+
+{% if procedures %}
+    <h2>This item is used in procedures:</h2>
+{% else %}
+    <h2>This item is not used in any procedures:</h2>
+{% endif %}
 {% with links=procedures %}
     {% include "common/links.html" %}
 {% endwith %}
