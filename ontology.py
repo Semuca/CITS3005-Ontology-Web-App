@@ -30,6 +30,11 @@ with ifixthat:
     class OrderedStep(Thing):
         pass
 
+    # To keep track of iris manually - so we can set guide and step iris
+    class lastIri(DataProperty):
+        domain = [Thing]
+        range = [int]
+
     # Procedure schema
     class subProcedureOf(ObjectProperty, TransitiveProperty):
         domain = [Procedure]
@@ -93,14 +98,12 @@ with ifixthat:
         range = [str]
 
 # Entity loading functions
-def to_uri(string: str | int) -> str:
-    string = str(string)
-    return string.replace(" ", "_")
+id_tracker = { ifixthat.Tool: 0, ifixthat.Item: 0, ifixthat.Part: 0, ifixthat.Image: 0, ifixthat.Procedure: 0, ifixthat.Step: 0 }
 
 procedure_to_steps = {}
 def load_procedure(procedure_json: dict[str, str]):
     # Create procedure and label
-    procedure_id = to_uri(procedure_json["Guidid"])
+    procedure_id = str(procedure_json["Guidid"])
     procedure_instance = ifixthat.Procedure(procedure_id, namespace=procedure_ns)
     procedure_instance.label = procedure_json["Title"]
 
@@ -140,9 +143,18 @@ def load_procedure(procedure_json: dict[str, str]):
             other_procedure_instance.subProcedureOf.append(procedure_instance)
     procedure_to_steps[procedure_instance] = steps_set
 
+    if int(procedure_id) > id_tracker[ifixthat.Procedure]:
+        id_tracker[ifixthat.Procedure] = int(procedure_id)
+
+name_to_item = {}
 def load_item(item_name: str, ancestors: list[str]):
+    # Check if item already exists
+    if item_name in name_to_item:
+        return name_to_item[item_name]
+
     # Create item and label
-    item_id = to_uri(item_name)
+    id_tracker[ifixthat.Item] += 1
+    item_id = str(id_tracker[ifixthat.Item])
     item_instance = ifixthat.Item(item_id, namespace=item_ns)
     item_instance.label = item_name
 
@@ -152,23 +164,41 @@ def load_item(item_name: str, ancestors: list[str]):
     category_instance = load_item(ancestors[0], ancestors[1:])
     item_instance.subCategoryOf.append(category_instance)
 
+    name_to_item[item_name] = item_instance
     return item_instance
 
+name_to_part = {}
 def load_part(item_name: str, part_name: str) -> Part:
+    # Check if part already exists
+    if f"{item_name} {part_name}" in name_to_part:
+        return name_to_part[f"{item_name} {part_name}"]
+
     # Create part and label
-    part_id = to_uri(f"{item_name} {part_name}")
+    id_tracker[ifixthat.Part] += 1
+    part_id = str(id_tracker[ifixthat.Part])
     part_instance = ifixthat.Part(part_id, namespace=part_ns)
     part_instance.label = part_name
 
     # partOf
-    item_instance = ifixthat.Item(to_uri(item_name), namespace=item_ns)
+    if item_name in name_to_item:
+        item_instance = name_to_item[item_name]
+    else:
+        id_tracker[ifixthat.Item] += 1
+        item_instance = ifixthat.Item(str(id_tracker[ifixthat.Item]), namespace=item_ns)
     part_instance.partOf.append(item_instance)
 
+    name_to_part[f"{item_name} {part_name}"] = part_instance
     return part_instance
 
+name_to_tool = {}
 def load_tool(tool_json: dict[str, str]) -> Tool:
+    # Check if tool already exists
+    if tool_json["Name"] in name_to_tool:
+        return name_to_tool[tool_json["Name"]]
+
     # Create tool and label
-    tool_id = to_uri(tool_json["Name"])
+    id_tracker[ifixthat.Tool] += 1
+    tool_id = str(id_tracker[ifixthat.Tool])
     tool_instance = ifixthat.Tool(tool_id, namespace=tool_ns)
     tool_instance.label = tool_json["Name"]
 
@@ -183,11 +213,12 @@ def load_tool(tool_json: dict[str, str]) -> Tool:
     if url:
         tool_instance.supplierUrl.append(tool_json["Url"])
 
+    name_to_tool[tool_json["Name"]] = tool_instance
     return tool_instance
 
 def load_step(step_json: dict[str, str]) -> Step:
     # Create step and label
-    step_id = to_uri(step_json["StepId"])
+    step_id = str(step_json["StepId"])
     step_instance = ifixthat.Step(step_id, namespace=step_ns)
 
     # hasImage
@@ -199,11 +230,18 @@ def load_step(step_json: dict[str, str]) -> Step:
     for tool in step_json["Tools_extracted"]:
         if tool == "NA":
             continue
-        tool_instance = ifixthat.Tool(to_uri(tool), namespace=tool_ns)
+        if tool in name_to_tool:
+            tool_instance = name_to_tool[tool]
+        else:
+            id_tracker[ifixthat.Tool] += 1
+            tool_instance = ifixthat.Tool(str(id_tracker[ifixthat.Tool]), namespace=tool_ns)
         step_instance.usesTool.append(tool_instance)
 
     # actions
     step_instance.actions.append(step_json["Text_raw"])
+
+    if int(step_id) > id_tracker[ifixthat.Step]:
+        id_tracker[ifixthat.Step] = int(step_id)
 
     return step_instance
 
@@ -214,7 +252,9 @@ def load_image(url: str) -> Image:
         return url_to_image[url]
 
     # Create image
-    image_instance = ifixthat.Image(namespace=image_ns)
+    id_tracker[ifixthat.Image] += 1
+    image_id = str(id_tracker[ifixthat.Image])
+    image_instance = ifixthat.Image(image_id, namespace=image_ns)
 
     # dataUrl
     image_instance.dataUrl.append(url)
@@ -227,6 +267,9 @@ with open("Game Console.json") as file:
     for line in file:
         procedure_json = json.loads(line)
         load_procedure(procedure_json)
+
+for class_instance, last_id in id_tracker.items():
+    class_instance.lastIri = last_id
 
 # Serialize ontology to file
 ifixthat.save(file="ontology.owl")

@@ -24,8 +24,10 @@ def create_entry():
         return 'RDF type not found', 404
 
     instance_ns = ifixthat.get_namespace(domain + rdf_type)
+    rdf_type_ref.lastIri[0] += 1
+    instance_last_iri = rdf_type_ref.lastIri[0]
 
-    new_instance = rdf_type_ref(f"{randint(30000, 40000)}", instance_ns) # TODO deal with iri generation
+    new_instance = rdf_type_ref(str(instance_last_iri), instance_ns)
 
     # Setting the properties
     for prop, value in properties.items():
