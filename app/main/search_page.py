@@ -8,7 +8,9 @@ def search_page() -> str:
 
     rdf_type = request.args.get('rdf_type', '?type')
     search = request.args.get('name', '')
-    limit = request.args.get('limit', 20)
+
+    pageSize = int(request.args.get('pageSize', 20))
+    page = int(request.args.get('page', 1))
 
     # Oooooooh sparql injections can be done here spoooooky
     query = f"""
@@ -18,8 +20,10 @@ def search_page() -> str:
             ?entity rdfs:label ?label .
             FILTER REGEX(?label, "{search}", "i")
         }}
-        LIMIT {limit}
+        LIMIT {pageSize} OFFSET {(page - 1) * pageSize}
     """
+
+    print(query)
 
     results = []
     for ref, label in g.query(query):
