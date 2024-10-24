@@ -1,7 +1,7 @@
 from flask import render_template, request
 
-from .views import main_bp, Link, ifixthat
-from owlready2 import *
+from .views import main_bp, Link
+from owlready2 import default_world
 
 @main_bp.route("/")
 def search_page() -> str:

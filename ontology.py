@@ -1,5 +1,5 @@
 import json
-from owlready2 import *
+from owlready2 import Thing, get_ontology, ObjectProperty, TransitiveProperty, DataProperty
 
 # Set up ontology classes and properties
 DOMAIN = "http://ifixthat.org/"
@@ -13,14 +13,22 @@ step_ns = ifixthat.get_namespace(DOMAIN + "Step")
 image_ns = ifixthat.get_namespace(DOMAIN + "Image")
 
 with ifixthat:
-    class Procedure(Thing): pass
-    class Item(Thing): pass
-    class Part(Thing): pass
-    class Tool(Thing): pass
-    class Step(Thing): pass
-    class Image(Thing): pass
+    class Procedure(Thing):
+        pass
+    class Item(Thing):
+        pass
+    class Part(Thing):
+        pass
+    class Tool(Thing):
+        pass
+    class Step(Thing):
+        pass
+    class Image(Thing):
+        pass
 
-    class OrderedStep(Thing): pass # To connect procedures to ordered steps
+    # To connect procedures to ordered steps
+    class OrderedStep(Thing):
+        pass
 
     # Procedure schema
     class subProcedureOf(ObjectProperty, TransitiveProperty):
@@ -221,4 +229,4 @@ with open("Game Console.json") as file:
         load_procedure(procedure_json)
 
 # Serialize ontology to file
-ifixthat.save(file="ontology.owl", format="rdfxml")
+ifixthat.save(file="ontology.owl")

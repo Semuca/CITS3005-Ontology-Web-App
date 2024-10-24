@@ -1,0 +1,142 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ifixthat: <http://ifixthat.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+ifixthat:ProcedureShape a sh:NodeShape ;
+    sh:closed true ;
+    sh:targetClass ifixthat:Procedure ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ] ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:subProcedureOf ;
+        sh:node ifixthat:ProcedureShape ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:requiresTool ;
+        sh:node ifixthat:ToolShape ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:guideOf ;
+        sh:nodeKind sh:IRI ;
+        sh:or (
+            [ sh:targetClass ifixthat:ItemShape ]
+            [ sh:targetClass ifixthat:PartShape ]
+        )
+    ] ;
+    sh:property [
+        sh:path ifixthat:hasStep ;
+        sh:node ifixthat:StepShape ;
+    ] .
+
+ifixthat:ItemShape a sh:NodeShape ;
+    sh:closed true ;
+    sh:targetClass ifixthat:Item ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ] ;
+    sh:property [
+        sh:path ifixthat:subCategoryOf ;
+        sh:node ifixthat:ItemShape ;
+    ] ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+    ] .
+
+ifixthat:PartShape a sh:NodeShape ;
+    sh:closed true ;
+    sh:targetClass ifixthat:Part ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ] ;
+    sh:property [
+        sh:path ifixthat:partOf ;
+        sh:node ifixthat:ItemShape ;
+    ] ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+    ] .
+
+ifixthat:OrderedStepShape a sh:NodeShape ;
+    sh:closed true ;
+    sh:targetClass ifixthat:OrderedStep ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ] ;
+    sh:property [
+        sh:path ifixthat:details ;
+        sh:node ifixthat:Step ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:order ;
+        sh:datatype xsd:integer ;
+    ] .
+
+ifixthat:StepShape a sh:NodeShape ;
+    sh:targetClass ifixthat:Step ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ];
+    sh:property [
+        sh:path ifixthat:hasImage ;
+        sh:node ifixthat:Image ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:usesTool ;
+        sh:node ifixthat:Tool ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:actions ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:order ;
+        sh:datatype xsd:integer ;
+    ] .
+
+
+ifixthat:ImageShape a sh:NodeShape ;
+    sh:closed true ;
+    sh:targetClass ifixthat:Image ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ];
+    sh:property [
+        sh:path ifixthat:dataUrl ;
+        sh:datatype xsd:string ;
+    ] .
+
+ifixthat:ToolShape a sh:NodeShape ;
+    sh:closed true ;
+    sh:targetClass ifixthat:Tool ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ];
+    sh:property [
+        sh:path ifixthat:hasImage ;
+        sh:node ifixthat:Image ;
+    ] ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:supplierUrl ;
+        sh:datatype xsd:string ;
+    ] .

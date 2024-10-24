@@ -1,4 +1,4 @@
-from owlready2 import *
+from owlready2 import get_ontology, default_world
 
 # Load the ontology as RDFLib graph
 ifixthat = get_ontology("ontology.owl").load()

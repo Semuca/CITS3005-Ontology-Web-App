@@ -7,8 +7,10 @@
         "IFIXIT",
         "ifixthat",
         "owlready",
+        "pyshacl",
         "rdflib",
         "RDFS",
+        "shacl",
         "SPARQL",
         "stepid"
     ]
