@@ -7,10 +7,11 @@
 
 ifixthat:ProcedureShape a sh:NodeShape ;
     sh:closed true ;
-    sh:or (
-        [ sh:targetClass ifixthat:Procedure  ]
-        [ sh:targetClass owl:NamedIndividual ]
-    ) ;
+    sh:targetClass ifixthat:Procedure ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ] ;
     sh:property [
         sh:path rdfs:label ;
         sh:datatype xsd:string ;
@@ -38,10 +39,11 @@ ifixthat:ProcedureShape a sh:NodeShape ;
 
 ifixthat:ItemShape a sh:NodeShape ;
     sh:closed true ;
-    sh:or (
-        [ sh:targetClass ifixthat:Item  ]
-        [ sh:targetClass owl:NamedIndividual ]
-    ) ;
+    sh:targetClass ifixthat:Item ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ] ;
     sh:property [
         sh:path ifixthat:subCategoryOf ;
         sh:node ifixthat:ItemShape ;
@@ -53,10 +55,11 @@ ifixthat:ItemShape a sh:NodeShape ;
 
 ifixthat:PartShape a sh:NodeShape ;
     sh:closed true ;
-    sh:or (
-        [ sh:targetClass ifixthat:Item  ]
-        [ sh:targetClass owl:NamedIndividual ]
-    ) ;
+    sh:targetClass ifixthat:Part ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ] ;
     sh:property [
         sh:path ifixthat:partOf ;
         sh:node ifixthat:ItemShape ;
@@ -66,12 +69,28 @@ ifixthat:PartShape a sh:NodeShape ;
         sh:datatype xsd:string ;
     ] .
 
-ifixthat:StepShape a sh:NodeShape ;
+ifixthat:OrderedStepShape a sh:NodeShape ;
     sh:closed true ;
-    sh:or (
-        [ sh:targetClass ifixthat:Step  ]
-        [ sh:targetClass owl:NamedIndividual ]
-    ) ;
+    sh:targetClass ifixthat:OrderedStep ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ] ;
+    sh:property [
+        sh:path ifixthat:details ;
+        sh:node ifixthat:Step ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:order ;
+        sh:datatype xsd:integer ;
+    ] .
+
+ifixthat:StepShape a sh:NodeShape ;
+    sh:targetClass ifixthat:Step ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ];
     sh:property [
         sh:path ifixthat:hasImage ;
         sh:node ifixthat:Image ;
@@ -83,15 +102,20 @@ ifixthat:StepShape a sh:NodeShape ;
     sh:property [
         sh:path ifixthat:actions ;
         sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:order ;
+        sh:datatype xsd:integer ;
     ] .
 
 
 ifixthat:ImageShape a sh:NodeShape ;
     sh:closed true ;
-    sh:or (
-        [ sh:targetClass ifixthat:Image  ]
-        [ sh:targetClass owl:NamedIndividual ]
-    ) ;
+    sh:targetClass ifixthat:Image ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ];
     sh:property [
         sh:path ifixthat:dataUrl ;
         sh:datatype xsd:string ;
@@ -99,10 +123,11 @@ ifixthat:ImageShape a sh:NodeShape ;
 
 ifixthat:ToolShape a sh:NodeShape ;
     sh:closed true ;
-    sh:or (
-        [ sh:targetClass ifixthat:Tool  ]
-        [ sh:targetClass owl:NamedIndividual ]
-    ) ;
+    sh:targetClass ifixthat:Tool ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:node owl:NamedIndividual
+    ];
     sh:property [
         sh:path ifixthat:hasImage ;
         sh:node ifixthat:Image ;
