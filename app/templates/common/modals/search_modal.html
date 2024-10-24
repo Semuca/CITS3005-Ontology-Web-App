@@ -3,25 +3,25 @@
 {% block content %}
     <div id="search-tabs" class="tab-container">
         <div class="tabs">
-            <button class="active" onclick="openTab(event, 'search-tabs', 'search-procedure-tab')" data-rdf-type="Procedure">Procedures</button>
-            <button onclick="openTab(event, 'search-tabs', 'search-part-tab')" data-rdf-type="Part">Parts</button>
-            <button onclick="openTab(event, 'search-tabs', 'search-item-tab')" data-rdf-type="Item">Items</button>
-            <button onclick="openTab(event, 'search-tabs', 'search-tool-tab')" data-rdf-type="Tool">Tools</button>
+            <button onclick="openTab(event, 'search-tabs', 'search-procedure-tab')">Procedures</button>
+            <button onclick="openTab(event, 'search-tabs', 'search-part-tab')">Parts</button>
+            <button onclick="openTab(event, 'search-tabs', 'search-item-tab')">Items</button>
+            <button onclick="openTab(event, 'search-tabs', 'search-tool-tab')">Tools</button>
         </div>
 
-        <div id="search-procedure-tab" class="tab-content active">
+        <div id="search-procedure-tab" class="tab-content active" data-rdf-type="Procedure">
             <label>Title</label>
             <input type="text" id="searchInput" placeholder="Search for procedure titles...">
         </div>
-        <div id="search-part-tab" class="tab-content">
+        <div id="search-part-tab" class="tab-content" data-rdf-type="Part">
             <label>Name</label>
             <input type="text" id="searchInput" placeholder="Search for part names...">
         </div>
-        <div id="search-item-tab" class="tab-content">
+        <div id="search-item-tab" class="tab-content" data-rdf-type="Item">
             <label>Name</label>
             <input type="text" id="searchInput" placeholder="Search for item names...">
         </div>
-        <div id="search-tool-tab" class="tab-content">
+        <div id="search-tool-tab" class="tab-content" data-rdf-type="Tool">
             <label>Name</label>
             <input type="text" id="searchInput" placeholder="Search for tool names...">
         </div>

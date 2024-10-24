@@ -12,16 +12,13 @@ const searchButton = document.getElementById("searchButton");
 
 searchButton.addEventListener("click", () => {
     const tabContainer = document.getElementById("search-tabs");
-    const tabs = tabContainer.querySelector('.tabs');
-    const selectedTab = tabs.querySelector('.active');
+    const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
 
     const query = [];
 
-    const type = selectedTab.getAttribute("data-rdf-type");
-    query.push(`props:rdf_type=${type}`);
+    const type = selectedTabWindow.getAttribute("data-rdf-type");
+    query.push(`rdf_type=props:${type}`);
 
-    const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
-    console.log(selectedTabWindow);
     const searchInput = selectedTabWindow.querySelector('#searchInput');
     if (searchInput.value) {
         query.push(`name=${searchInput.value}`);
