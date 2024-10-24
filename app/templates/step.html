@@ -5,6 +5,16 @@
 <h2>Step actions:</h2>
 <p contenteditable="true" data-property="http://ifixthat.org/properties/actions">{{ actions }}</p>
 
+{% if images %}
+    <h2>This step has images:</h2>
+{% else %}
+    <h2>This step does not have any images:</h2>
+{% endif %}
+
+{% with links=images %}
+    {% include "common/links.html" %}
+{% endwith %}
+
 
 {% if tools %}
     <h2>This step uses tools:</h2>

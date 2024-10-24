@@ -9,6 +9,17 @@
 <p contenteditable="true" data-property="http://ifixthat.org/properties/supplierUrl">{{ supplier_url }}</p>
 
 
+{% if images %}
+    <h2>This tool has images:</h2>
+{% else %}
+    <h2>This tool does not have any images:</h2>
+{% endif %}
+
+{% with links=images %}
+    {% include "common/links.html" %}
+{% endwith %}
+
+
 {% if procedures %}
     <h2>This tool is used in procedures:</h2>
 {% else %}

@@ -16,9 +16,12 @@ class Link:
         'Tool': 'construction',
     }
 
-    def __init__(self: Self, thing: any, title: str = None, subtitle: str = None) -> None:
+    def __init__(self: Self, thing: any, title: str = None, subtitle: str = None, images: list[str] = [], hideContent: bool = False) -> None:
         self.ref = thing
         self.uri = thing.iri
+
+        self.images = images
+        self.hideContent = hideContent
 
         self.rdf_type = thing.is_a[0].name
         self.url = "/" + self.rdf_type + "/" + thing.iri.split("#")[-1]

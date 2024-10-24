@@ -13,4 +13,6 @@ def tool_page(tool: str) -> str:
     procedures_requiring_tool = ifixthat.search(type=ifixthat.Procedure, requiresTool=tool_instance)
     procedures = [Link(procedure) for procedure in procedures_requiring_tool]
 
-    return render_template('tool.html', label=label, supplier_url=supplier_url, procedures=procedures)
+    images = [Link(has_image, images=has_image.dataUrl, hideContent=True) for has_image in tool_instance.hasImage]
+
+    return render_template('tool.html', label=label, images=images, supplier_url=supplier_url, procedures=procedures)

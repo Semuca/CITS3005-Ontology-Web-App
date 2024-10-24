@@ -15,6 +15,8 @@ def step_page(step: str) -> str:
     procedures = []
     for ordered_step in ordered_steps_with_step:
         procedure = ifixthat.search_one(type=ifixthat.Procedure, hasStep=ordered_step)
-        procedures.append(Link(procedure))
+        procedures.append(Link(procedure, images=[image.dataUrl for image in procedure.hasImage]))
 
-    return render_template('step.html', actions=actions, procedures=procedures, tools=tools)
+    images = [Link(has_image, images=has_image.dataUrl, hideContent=True) for has_image in step_instance.hasImage]
+
+    return render_template('step.html', images=images, actions=actions, procedures=procedures, tools=tools)
