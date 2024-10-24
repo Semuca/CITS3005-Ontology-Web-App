@@ -8,7 +8,7 @@ def tool_page(tool: str) -> str:
     tool_instance = ifixthat.search_one(type=ifixthat.Tool, iri=f"*{tool}")
 
     label = tool_instance.label[0]
-    supplier_url = tool_instance.supplierUrl[0]
+    supplier_url = tool_instance.supplierUrl[0] if len(tool_instance.supplierUrl) > 0 else ""
 
     procedures_requiring_tool = ifixthat.search(type=ifixthat.Procedure, requiresTool=tool_instance)
     procedures = [Link(procedure) for procedure in procedures_requiring_tool]

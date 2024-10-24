@@ -1,26 +1,54 @@
 """Defines endpoint for creating entries"""
 
 from flask import request
-from rdflib import RDF, RDFS, Literal, URIRef
 from .bp import api_bp
-from main.views import g, domain
+from main.views import domain, ifixthat
+from filelock import FileLock
+
+from random import randint
 
 @api_bp.route('/', methods=['POST'])
 def create_entry():
     """Create an entry"""
-
+    # Parameters
     body = request.get_json()
     rdf_type = body.get('rdf_type')
-    label = body.get('label')
+    properties = body.get('properties')
 
-    if not rdf_type or not label:
-        return 'RDF type or label not provided', 400
-    
-    uri = URIRef(f'{domain}{rdf_type.lower()}/{label}')
+    if not rdf_type:
+        return 'RDF type not provided', 400
 
-    g.add((uri, RDF.type, URIRef(f'{domain}properties/{rdf_type.capitalize()}')))
-    g.add((uri, RDFS.label, Literal(label)))
+    # Making the new instance
+    rdf_type_ref = getattr(ifixthat, rdf_type, None)
+    if rdf_type_ref is None:
+        return 'RDF type not found', 404
 
-    g.serialize('../ontology.owl', format='xml')
+    instance_ns = ifixthat.get_namespace(domain + rdf_type)
+
+    new_instance = rdf_type_ref(f"{randint(30000, 40000)}", instance_ns) # TODO deal with iri generation
+
+    # Setting the properties
+    for prop, value in properties.items():
+        prop_name = ""
+        if prop == "http://www.w3.org/2000/01/rdf-schema#label":
+            prop_name = "label"
+        else:
+            prop_name = ifixthat.search_one(iri=prop).name
+            if prop_name is None:
+                return f'Property {prop} not found', 404
+
+        try:
+            setattr(new_instance, prop_name, [value])
+        except AttributeError:
+            return f"Property '{prop_name}' not found on instance", 400
+
+    # Saving the ontology - using file lock to prevent file from wiping
+    lock_path = "../ontology.owl.lock"
+    file_lock = FileLock(lock_path)
+    try:
+        with file_lock:  # This ensures only one request can write at a time
+            ifixthat.save(file="../ontology.owl", format="rdfxml")
+    except Exception as e:
+        return f"Error saving ontology: {str(e)}", 500
 
     return 'Entry created', 201
