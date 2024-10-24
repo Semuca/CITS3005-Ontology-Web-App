@@ -12,6 +12,7 @@
         "RDFS",
         "shacl",
         "SPARQL",
-        "stepid"
+        "stepid",
+        "swrl"
     ]
 }

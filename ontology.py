@@ -1,5 +1,5 @@
 import json
-from owlready2 import Thing, get_ontology, ObjectProperty, TransitiveProperty, DataProperty
+from owlready2 import Thing, get_ontology, ObjectProperty, DataProperty, Imp, sync_reasoner_pellet
 
 # Set up ontology classes and properties
 DOMAIN = "http://ifixthat.org/"
@@ -31,7 +31,7 @@ with ifixthat:
         pass
 
     # Procedure schema
-    class subProcedureOf(ObjectProperty, TransitiveProperty):
+    class subProcedureOf(ObjectProperty):
         domain = [Procedure]
         range = [Procedure]
 
@@ -56,12 +56,12 @@ with ifixthat:
         range = [Step]
 
     # Item schema
-    class subCategoryOf(ObjectProperty, TransitiveProperty):
+    class subCategoryOf(ObjectProperty):
         domain = [Item]
         range = [Item]
 
     # Part schema
-    class partOf(ObjectProperty, TransitiveProperty):
+    class partOf(ObjectProperty):
         domain = [Part]
         range = [Part | Item]
 
@@ -91,6 +91,24 @@ with ifixthat:
     class dataUrl(DataProperty):
         domain = [Image]
         range = [str]
+
+    # SWRL rules
+
+    # 1. Transitive subclass rule for Item
+    subclass_swrl = "Item(?x) ^ subCategoryOf(?x, ?y) ^ subCategoryOf(?y, ?z) -> subCategoryOf(?x, ?z)"
+
+    # 2. Part-of relation that determines when one item is a part of another
+    part_of_swrl = "Part(?x) ^ partOf(?x, ?y) ^ partOf(?y, ?z) -> partOf(?x, ?z)"
+
+    # 3. Tools used in a step of the procedure should appear in the list of tools required for the procedure
+    tool_swrl = "Step(?x) ^ usesTool(?x, ?y) ^ hasStep(?z, ?x) -> requiresTool(?z, ?y)"
+
+    # 4. A sub-procedure of a procedure must be a procedure for the same item or a part of that item.
+    sub_procedure_swrl = "Procedure(?x) ^ guideOf(?x, ?z) ^ guideOf(?y, ?z) -> subProcedureOf(?x, ?y)"
+
+    for rule in [subclass_swrl, part_of_swrl, tool_swrl, sub_procedure_swrl]:
+        imp = Imp()
+        imp.set_as_rule(rule)
 
 # Entity loading functions
 def to_uri(string: str | int) -> str:
@@ -227,6 +245,9 @@ with open("Game Console.json") as file:
     for line in file:
         procedure_json = json.loads(line)
         load_procedure(procedure_json)
+
+# Run the Pellet reasoner
+sync_reasoner_pellet(infer_property_values = True, infer_data_property_values = True, debug=0)
 
 # Serialize ontology to file
 ifixthat.save(file="ontology.owl")
