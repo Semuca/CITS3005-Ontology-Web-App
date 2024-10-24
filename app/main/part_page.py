@@ -14,16 +14,28 @@ def part_page(part: str) -> str:
         }}
     """))[0][0]
 
-    query = f"""
+    itemsQuery = f"""
+        SELECT ?item ?label
+        WHERE {{
+            {uri} props:partOf ?item .
+            ?item rdfs:label ?label .
+        }}
+    """
+
+    items = []
+    for ref, item_label in g.query(itemsQuery):
+        items.append(Link(ref, title=item_label))
+
+    proceduresQuery = f"""
         SELECT ?procedure ?label
         WHERE {{
-            {uri} props:partOf ?procedure .
+            ?procedure props:guideOf {uri} .
             ?procedure rdfs:label ?label .
         }}
     """
 
     procedures = []
-    for ref, procedure_label in g.query(query):
+    for ref, procedure_label in g.query(proceduresQuery):
         procedures.append(Link(ref, title=procedure_label))
 
-    return render_template('part.html', label=label, procedures=procedures)
+    return render_template('part.html', label=label, items=items, procedures=procedures)

@@ -25,7 +25,7 @@ class Link:
         self.name = url.removeprefix(f"{self.rdf_type}/")
 
         self.title = title or self.name
-        self.subtitle = subtitle or self.rdf_type
+        self.subtitle = subtitle or self.rdf_type.capitalize()
 
         self.icon = self.type_to_icon_map.get(self.rdf_type, 'help')
 

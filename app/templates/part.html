@@ -5,6 +5,11 @@
 <h2>Part name:</h2>
 <p contenteditable="true" data-property="http://www.w3.org/2000/01/rdf-schema#label">{{ label }}</p>
 
+<h2>This part is part of item:</h2>
+{% with links=items %}
+    {% include "common/links.html" %}
+{% endwith %}
+
 <h2>This part is used in procedures:</h2>
 {% with links=procedures %}
     {% include "common/links.html" %}

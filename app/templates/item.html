@@ -2,8 +2,23 @@
 
 {% block content %}
 
-<h2>Part name:</h2>
+<h2>Item name:</h2>
 <p contenteditable="true" data-property="http://www.w3.org/2000/01/rdf-schema#label">{{ label }}</p>
+
+<h2>This item has parents:</h2>
+{% with links=categoryParents %}
+    {% include "common/links.html" %}
+{% endwith %}
+
+<h2>This item has children:</h2>
+{% with links=categoryChildren %}
+    {% include "common/links.html" %}
+{% endwith %}
+
+<h2>This item has parts:</h2>
+{% with links=parts %}
+    {% include "common/links.html" %}
+{% endwith %}
 
 <h2>This item has procedures:</h2>
 {% with links=procedures %}
