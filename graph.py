@@ -1,5 +1,5 @@
 import json
-from rdflib import RDFS, XSD
+from rdflib import RDFS
 from rdflib.graph import Graph, Literal, Namespace, RDF, BNode, Collection
 
 # Set up graph and namespaces

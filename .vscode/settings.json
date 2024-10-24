@@ -3,6 +3,7 @@
         "commentid",
         "contenteditable",
         "guideid",
+        "Guidid",
         "IFIXIT",
         "owlready",
         "rdflib",
