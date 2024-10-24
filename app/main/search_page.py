@@ -16,6 +16,7 @@ def search_page() -> str:
 
     # Query
     query = f"""
+        PREFIX ifixthat: <http://ifixthat.org/>
         SELECT DISTINCT ?entity
         WHERE {{
             ?entity rdf:type {rdf_type} .
