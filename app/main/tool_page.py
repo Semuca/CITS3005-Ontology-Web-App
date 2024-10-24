@@ -13,4 +13,4 @@ def tool_page(tool: str) -> str:
     procedures_requiring_tool = ifixthat.search(type=ifixthat.Procedure, requiresTool=tool_instance)
     procedures = [Link(procedure) for procedure in procedures_requiring_tool]
 
-    return render_template('tool.html', label=label, supplier_url=supplier_url, procedures=procedures)
+    return render_template('tool.html', uri=tool_instance.iri, label=label, supplier_url=supplier_url, procedures=procedures)

@@ -17,4 +17,4 @@ def step_page(step: str) -> str:
         procedure = ifixthat.search_one(type=ifixthat.Procedure, hasStep=orderedstep)
         procedures.append(Link(procedure))
 
-    return render_template('step.html', actions=actions, procedures=procedures, tools=tools)
+    return render_template('step.html', uri=step_instance.iri, actions=actions, procedures=procedures, tools=tools)

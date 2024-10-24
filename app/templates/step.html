@@ -1,30 +1,22 @@
-{% extends "common/base.html" %}
-
-{% block content %}
+{% extends "common/base.html" %} {% block content %}
 
 <h2>Step actions:</h2>
-<p contenteditable="true" data-property="http://ifixthat.org/properties/actions">{{ actions }}</p>
-
+<p
+	contenteditable="true"
+	data-uri="{{ uri }}"
+	data-property="http://ifixthat.org/actions"
+>
+	{{ actions }}
+</p>
 
 {% if tools %}
-    <h2>This step uses tools:</h2>
+<h2>This step uses tools:</h2>
 {% else %}
-    <h2>This step uses no tools:</h2>
-{% endif %}
-
-{% with links=tools %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-
-{% if procedures %}
-    <h2>This step is part of procedures:</h2>
+<h2>This step uses no tools:</h2>
+{% endif %} {% with links=tools %} {% include "common/links.html" %} {% endwith
+%} {% if procedures %}
+<h2>This step is part of procedures:</h2>
 {% else %}
-    <h2>This step is not part of any procedures:</h2>
-{% endif %}
-
-{% with links=procedures %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-{% endblock %}
+<h2>This step is not part of any procedures:</h2>
+{% endif %} {% with links=procedures %} {% include "common/links.html" %} {%
+endwith %} {% endblock %}

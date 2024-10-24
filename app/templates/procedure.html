@@ -1,41 +1,27 @@
-{% extends "common/base.html" %}
-
-{% block content %}
+{% extends "common/base.html" %} {% block content %}
 
 <h2>Procedure name:</h2>
-<p contenteditable="true" data-property="http://www.w3.org/2000/01/rdf-schema#label">{{ label }}</p>
-
+<p
+	contenteditable="true"
+	data-property="http://www.w3.org/2000/01/rdf-schema#label"
+	data-uri="{{ uri }}"
+>
+	{{ label }}
+</p>
 
 {% if steps %}
-    <h2>This procedure has steps:</h2>
+<h2>This procedure has steps:</h2>
 {% else %}
-    <h2>This procedure has no steps:</h2>
-{% endif %}
-
-{% with links=steps %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-
-{% if parts %}
-    <h2>This procedure requires parts:</h2>
+<h2>This procedure has no steps:</h2>
+{% endif %} {% with links=steps %} {% include "common/links.html" %} {% endwith
+%} {% if parts %}
+<h2>This procedure requires parts:</h2>
 {% else %}
-    <h2>This procedure requires no parts:</h2>
-{% endif %}
-
-{% with links=parts %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-
-{% if tools %}
-    <h2>This procedure has tools:</h2>
+<h2>This procedure requires no parts:</h2>
+{% endif %} {% with links=parts %} {% include "common/links.html" %} {% endwith
+%} {% if tools %}
+<h2>This procedure has tools:</h2>
 {% else %}
-    <h2>This procedure has no tools:</h2>
-{% endif %}
-
-{% with links=tools %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-{% endblock %}
+<h2>This procedure has no tools:</h2>
+{% endif %} {% with links=tools %} {% include "common/links.html" %} {% endwith
+%} {% endblock %}

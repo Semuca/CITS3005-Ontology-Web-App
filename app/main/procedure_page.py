@@ -20,4 +20,4 @@ def procedure_page(procedure: str) -> str:
     steps.sort(key=lambda x: x[0].order)
     steps = [Link(step_ref, subtitle=step_actions) for step_ref, step_actions in steps]
 
-    return render_template('procedure.html', label=label, steps=steps, parts=parts, tools=tools)
+    return render_template('procedure.html', uri=procedure_instance.iri, label=label, steps=steps, parts=parts, tools=tools)

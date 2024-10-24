@@ -12,4 +12,4 @@ def part_page(part: str) -> str:
     procedures_for_part = ifixthat.search(type=ifixthat.Procedure, guideOf=part_instance)
     procedures = [Link(procedure) for procedure in procedures_for_part]
 
-    return render_template('part.html', label=label, items=items, procedures=procedures)
+    return render_template('part.html', uri=part_instance.iri, label=label, items=items, procedures=procedures)
