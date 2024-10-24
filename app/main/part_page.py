@@ -1,41 +1,15 @@
 from flask import render_template
-from .views import main_bp, Link, domain, g
+from .views import main_bp, Link, ifixthat
 
-@main_bp.route("/part/<part>")
+@main_bp.route("/Part/<part>")
 def part_page(part: str) -> str:
     """The part page"""
+    part_instance = ifixthat.search_one(type=ifixthat.Part, iri=f"*{part}")
 
-    uri = f"<{domain}part/{part}>"
+    label = part_instance.label[0]
+    items = [Link(item) for item in part_instance.partOf]
 
-    label = list(g.query(f"""
-        SELECT ?label
-        WHERE {{
-            {uri} rdfs:label ?label .
-        }}
-    """))[0][0]
-
-    itemsQuery = f"""
-        SELECT ?item ?label
-        WHERE {{
-            {uri} props:partOf ?item .
-            ?item rdfs:label ?label .
-        }}
-    """
-
-    items = []
-    for ref, item_label in g.query(itemsQuery):
-        items.append(Link(ref, title=item_label))
-
-    proceduresQuery = f"""
-        SELECT ?procedure ?label
-        WHERE {{
-            ?procedure props:guideOf {uri} .
-            ?procedure rdfs:label ?label .
-        }}
-    """
-
-    procedures = []
-    for ref, procedure_label in g.query(proceduresQuery):
-        procedures.append(Link(ref, title=procedure_label))
+    procedures_for_part = ifixthat.search(type=ifixthat.Procedure, guideOf=part_instance)
+    procedures = [Link(procedure) for procedure in procedures_for_part]
 
     return render_template('part.html', label=label, items=items, procedures=procedures)

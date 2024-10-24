@@ -1,65 +1,21 @@
 from flask import render_template
-from .views import main_bp, Link, domain, g
+from .views import main_bp, Link, ifixthat
 
-@main_bp.route("/item/<item>")
+@main_bp.route("/Item/<item>")
 def item_page(item: str) -> str:
     """The item page"""
+    item_instance = ifixthat.search_one(type=ifixthat.Item, iri=f"*{item}")
 
-    uri = f"<{domain}item/{item}>"
+    label = item_instance.label[0]
+    parents = [Link(parent) for parent in item_instance.subCategoryOf]
 
-    label = list(g.query(f"""
-        SELECT ?label
-        WHERE {{
-            {uri} rdfs:label ?label .
-        }}
-    """))[0][0]
+    children_of_item = ifixthat.search(type=ifixthat.Item, subCategoryOf=item_instance)
+    children = [Link(child) for child in children_of_item]
 
-    categoryParentsQuery = f"""
-        SELECT ?category ?label
-        WHERE {{
-            {uri} props:subCategoryOf ?category .
-            ?category rdfs:label ?label .
-        }}
-    """
+    parts_of_item = ifixthat.search(type=ifixthat.Part, partOf=item_instance)
+    parts = [Link(part) for part in parts_of_item]
 
-    categoryParents = []
-    for ref, category_label in g.query(categoryParentsQuery):
-        categoryParents.append(Link(ref, title=category_label))
+    procedures_for_item = ifixthat.search(type=ifixthat.Procedure, guideOf=item_instance)
+    procedures = [Link(procedure) for procedure in procedures_for_item]
 
-    categoryChildrenQuery = f"""
-        SELECT ?subCategory ?label
-        WHERE {{
-            ?subCategory props:subCategoryOf {uri} .
-            ?subCategory rdfs:label ?label .
-        }}
-    """
-
-    categoryChildren = []
-    for ref, subCategory_label in g.query(categoryChildrenQuery):
-        categoryChildren.append(Link(ref, title=subCategory_label))
-
-    partsQuery = f"""
-        SELECT ?part ?label
-        WHERE {{
-            ?part props:partOf {uri} .
-            ?part rdfs:label ?label .
-        }}
-    """
-
-    parts = []
-    for ref, part_label in g.query(partsQuery):
-        parts.append(Link(ref, title=part_label))
-
-    proceduresQuery = f"""
-        SELECT ?procedure ?label
-        WHERE {{
-            ?procedure props:guideOf {uri} .
-            ?procedure rdfs:label ?label .
-        }}
-    """
-
-    procedures = []
-    for ref, procedure_label in g.query(proceduresQuery):
-        procedures.append(Link(ref, title=procedure_label))
-
-    return render_template('item.html', label=label, categoryParents=categoryParents, categoryChildren=categoryChildren, parts=parts, procedures=procedures)
+    return render_template('item.html', label=label, categoryParents=parents, categoryChildren=children, parts=parts, procedures=procedures)

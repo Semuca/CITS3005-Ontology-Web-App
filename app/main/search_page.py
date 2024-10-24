@@ -1,20 +1,22 @@
 from flask import render_template, request
 
-from .views import main_bp, Link, g
+from .views import main_bp, Link, ifixthat
+from owlready2 import *
 
 @main_bp.route("/")
 def search_page() -> str:
     """The search page"""
 
+    # Parameters
     rdf_type = request.args.get('rdf_type', '?type')
     search = request.args.get('name', '')
 
     pageSize = int(request.args.get('pageSize', 20))
     page = int(request.args.get('page', 1))
 
-    # Oooooooh sparql injections can be done here spoooooky
+    # Query
     query = f"""
-        SELECT DISTINCT ?entity ?label
+        SELECT DISTINCT ?entity
         WHERE {{
             ?entity rdf:type {rdf_type} .
             ?entity rdfs:label ?label .
@@ -24,7 +26,8 @@ def search_page() -> str:
     """
 
     results = []
-    for ref, label in g.query(query):
-        results.append(Link(ref, title=label))
+    for row in default_world.sparql(query):
+        results.append(Link(row[0]))
 
     return render_template('search.html', results=results)
+

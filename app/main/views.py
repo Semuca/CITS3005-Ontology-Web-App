@@ -9,27 +9,27 @@ main_bp = Blueprint('main_bp', __name__)
 class Link:
 
     type_to_icon_map = {
-        'item': 'category',
-        'part': 'toys_and_games',
-        'procedure': 'receipt_long',
-        'step': 'stairs_2',
-        'tool': 'construction',
+        'Item': 'category',
+        'Part': 'toys_and_games',
+        'Procedure': 'receipt_long',
+        'Step': 'stairs_2',
+        'Tool': 'construction',
     }
 
-    def __init__(self: Self, uri: str, title: str = None, subtitle: str = None) -> None:
-        self.uri = uri
-        url = self.uri.removeprefix(domain)
+    def __init__(self: Self, thing: any, title: str = None, subtitle: str = None) -> None:
+        self.ref = thing
 
-        self.url = '/' + url
-        self.rdf_type = url.split('/')[0]
-        self.name = url.removeprefix(f"{self.rdf_type}/")
+        self.rdf_type = thing.is_a[0].name
+        self.url = "/" + self.rdf_type + "/" + thing.iri.split("#")[-1]
+        self.name = thing.iri.split("#")[-1]
 
-        self.title = title or self.name
+        self.title = title or (len(thing.label) > 0 and thing.label[0]) or self.name
         self.subtitle = subtitle or self.rdf_type.capitalize()
 
         self.icon = self.type_to_icon_map.get(self.rdf_type, 'help')
 
-get_ontology("../ontology.owl").load()
+ifixthat = get_ontology("../ontology.owl").load()
+
 g = default_world.as_rdflib_graph()
 
 domain = "http://ifixthat.org/"
