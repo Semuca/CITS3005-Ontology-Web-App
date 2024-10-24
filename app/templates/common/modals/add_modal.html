@@ -1,6 +1,30 @@
 {% extends "common/modal.html" %}
 
 {% block content %}
-    <p>Add entry content</p>
+<div id="add-tabs" class="tab-container">
+    <div class="tabs">
+        <button onclick="openTab(event, 'add-tabs', 'add-procedure-tab')">Procedures</button>
+        <button onclick="openTab(event, 'add-tabs', 'add-part-tab')">Parts</button>
+        <button onclick="openTab(event, 'add-tabs', 'add-item-tab')">Items</button>
+        <button onclick="openTab(event, 'add-tabs', 'add-tool-tab')">Tools</button>
+    </div>
+
+    <div id="add-procedure-tab" class="tab-content active" data-rdf-type="Procedure">
+        <label>Title</label>
+        <input type="text" id="searchInput" placeholder="Add procedure name...">
+    </div>
+    <div id="add-part-tab" class="tab-content" data-rdf-type="Part">
+        <label>Name</label>
+        <input type="text" id="searchInput" placeholder="Add part name...">
+    </div>
+    <div id="add-item-tab" class="tab-content" data-rdf-type="Item">
+        <label>Name</label>
+        <input type="text" id="searchInput" placeholder="Add item name...">
+    </div>
+    <div id="add-tool-tab" class="tab-content" data-rdf-type="Tool">
+        <label>Name</label>
+        <input type="text" id="searchInput" placeholder="Add tool name...">
+    </div>
+</div>
     <button id="addButton">Add</button>
 {% endblock %}

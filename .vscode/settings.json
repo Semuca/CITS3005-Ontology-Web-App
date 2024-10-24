@@ -5,6 +5,7 @@
         "IFIXIT",
         "owlready",
         "rdflib",
+        "RDFS",
         "SPARQL",
         "stepid"
     ]
