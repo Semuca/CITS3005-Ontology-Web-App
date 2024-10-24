@@ -1,9 +1,47 @@
+const tabContainer = document.getElementById("add-tabs");
+
 const addButton = document.getElementById("addButton");
-addButton.addEventListener("click", () => {
 
-    const tabContainer = document.getElementById("add-tabs");
+const tabIdToRequiredFields = {
+    'add-procedure-tab': ['searchInput'],
+    'add-part-tab': ['searchInput'],
+    'add-item-tab': ['searchInput'],
+    'add-tool-tab': ['searchInput'],
+};
+
+function setupValidation() {
+    for (const tabId in tabIdToRequiredFields) {
+        const tabWindow = tabContainer.querySelector(`#${tabId}`);
+
+        const requiredFields = tabIdToRequiredFields[tabId];
+
+        for (const field of requiredFields) {
+            tabWindow.querySelector(`#${field}`).addEventListener("input", validateAddButton);
+        }
+    }
+
+    validateAddButton();
+}
+
+function validateAddButton() {
     const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
+    
+    const requiredFields = tabIdToRequiredFields[selectedTabWindow.id];
 
+    for (const field of requiredFields) {
+        if (!selectedTabWindow.querySelector(`#${field}`).value) {
+            addButton.disabled = true;
+            return;
+        }
+    }
+
+    addButton.disabled = false;
+}
+
+setupValidation();
+
+addButton.addEventListener("click", () => {
+    const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
     const rdf_type = selectedTabWindow.getAttribute("data-rdf-type");
 
     const searchInput = selectedTabWindow.querySelector('#searchInput');
