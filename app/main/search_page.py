@@ -6,23 +6,25 @@ from .views import main_bp, Link, g
 def search_page() -> str:
     """The search page"""
 
-    rdf_type = request.args.get('rdf_type', '')
-    parsed_rdf_type = f'props:{rdf_type}' if rdf_type else '?type'
-    limit = request.args.get('limit', 10)
+    rdf_type = request.args.get('rdf_type', '?type')
+    search = request.args.get('name', '')
+    limit = request.args.get('limit', 20)
 
     # Oooooooh sparql injections can be done here spoooooky
     query = f"""
-        SELECT DISTINCT ?entity
+        SELECT DISTINCT ?entity ?label
         WHERE {{
-            ?entity rdf:type {parsed_rdf_type} .
+            ?entity rdf:type {rdf_type} .
+            ?entity rdfs:label ?label .
+            FILTER REGEX(?label, "{search}", "i")
         }}
         LIMIT {limit}
     """
 
     results = []
-    for result in g.query(query):
-        result_rdf_type = result[0].split('/')[-2]
-        id = result[0].split('/')[-1]
-        results.append(Link(result[0], result[0], result_rdf_type, f'/{result_rdf_type.lower()}/{id}'))
+    for ref, label in g.query(query):
+        result_rdf_type = ref.split('/')[-2]
+        id = ref.split('/')[-1]
+        results.append(Link(ref, label, result_rdf_type, f'/{result_rdf_type.lower()}/{id}'))
 
     return render_template('search.html', results=results)

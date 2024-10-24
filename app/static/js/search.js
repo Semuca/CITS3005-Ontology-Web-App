@@ -1,3 +1,13 @@
+const limitSelectors = document.querySelectorAll('.limit-selector');
+
+limitSelectors.forEach((limitSelector) => {
+    const urlObj = new URL(window.location.href, window.location.origin);
+
+    urlObj.searchParams.set('limit', limitSelector.textContent);
+
+    limitSelector.href = urlObj.toString();
+});
+
 const searchButton = document.getElementById("searchButton");
 
 searchButton.addEventListener("click", () => {
@@ -5,10 +15,19 @@ searchButton.addEventListener("click", () => {
     const tabs = tabContainer.querySelector('.tabs');
     const selectedTab = tabs.querySelector('.active');
 
-    let query = '?';
+    const query = [];
 
     const type = selectedTab.getAttribute("data-rdf-type");
-    query += `rdf_type=${type}`;
+    query.push(`props:rdf_type=${type}`);
 
-    window.location.href = query;
+    const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
+    console.log(selectedTabWindow);
+    const searchInput = selectedTabWindow.querySelector('#searchInput');
+    if (searchInput.value) {
+        query.push(`name=${searchInput.value}`);
+    }
+
+    const queryString = `?${query.join('&')}`;
+
+    window.location.href = queryString;
 });

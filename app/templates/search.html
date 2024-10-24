@@ -5,6 +5,7 @@
 {% if results %}
     <h2>Search Results</h2>
     <p>Found {{ results|length }} results:</p>
+    {% include "common/limit_selector.html" %}
     {% with links=results %}
         {% include "common/links.html" %}
     {% endwith %}
