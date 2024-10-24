@@ -3,7 +3,7 @@
 from flask import request
 from .bp import api_bp
 from main.views import ifixthat
-from owlready2 import *
+from owlready2 import destroy_entity
 
 @api_bp.route('/', methods=['DELETE'])
 def delete_entry():
@@ -18,6 +18,6 @@ def delete_entry():
     instance = ifixthat.search_one(iri=uri)
     destroy_entity(instance)
 
-    ifixthat.save(file="../ontology.owl", format="rdfxml")
+    ifixthat.save(file="../ontology.owl")
 
     return 'Entry deleted', 200

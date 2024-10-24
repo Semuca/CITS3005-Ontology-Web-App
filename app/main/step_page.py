@@ -10,11 +10,11 @@ def step_page(step: str) -> str:
     actions = step_instance.actions[0]
     tools = [Link(tool) for tool in step_instance.usesTool]
 
-    orderedsteps_with_step = ifixthat.search(type=ifixthat.OrderedStep, details=step_instance)
+    ordered_steps_with_step = ifixthat.search(type=ifixthat.OrderedStep, details=step_instance)
 
     procedures = []
-    for orderedstep in orderedsteps_with_step:
-        procedure = ifixthat.search_one(type=ifixthat.Procedure, hasStep=orderedstep)
+    for ordered_step in ordered_steps_with_step:
+        procedure = ifixthat.search_one(type=ifixthat.Procedure, hasStep=ordered_step)
         procedures.append(Link(procedure))
 
     return render_template('step.html', actions=actions, procedures=procedures, tools=tools)
