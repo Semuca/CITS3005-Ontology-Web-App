@@ -79,10 +79,17 @@ def create_link():
         if parentUri is None:
             parent_instance = ifixthat.search_one(is_a=rdf_type_ref, iri=f"*#{linkId}")
             child_instance = ifixthat.search_one(iri=childUri)
-            getattr(parent_instance, prop_name).append(child_instance)
         else:
             parent_instance = ifixthat.search_one(iri=parentUri)
             child_instance = ifixthat.search_one(is_a=rdf_type_ref, iri=f"*#{linkId}")
+
+        if prop_name == "hasStep":
+            num_steps = len(parent_instance.hasStep)
+            ordered_step_instance = ifixthat.OrderedStep()
+            ordered_step_instance.details.append(child_instance)
+            ordered_step_instance.order.append(num_steps)
+            parent_instance.hasStep.append(ordered_step_instance)
+        else:
             getattr(parent_instance, prop_name).append(child_instance)
     except Exception as e:
         return f"Error linking instances: {str(e)}", 500

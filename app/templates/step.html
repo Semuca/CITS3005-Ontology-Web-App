@@ -33,5 +33,13 @@
 {% with links=tools %} {% include "common/links.html" %} {% endwith %}
 
 <h2>Part of procedures</h2>
+<div
+	data-property="http://ifixthat.org/hasStep"
+	child-uri="{{ uri }}"
+	data-object-type="Procedure"
+>
+	<input type="number" placeholder="Procedure ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
 {% with links=procedures %} {% include "common/links.html" %} {% endwith %} {%
 endblock %}

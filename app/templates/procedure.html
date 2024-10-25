@@ -11,6 +11,14 @@
 </p>
 
 <h2>Steps</h2>
+<div
+	data-property="http://ifixthat.org/hasStep"
+	parent-uri="{{ uri }}"
+	data-object-type="Step"
+>
+	<input type="number" placeholder="Step ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
 {% with links=steps %} {% include "common/links.html" %} {% endwith %}
 
 <h2>For parts</h2>

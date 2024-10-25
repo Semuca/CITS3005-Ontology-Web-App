@@ -39,12 +39,6 @@ class Link:
 
 ifixthat = get_ontology("../ontology.owl").load()
 
-rdf_type_ref = getattr(ifixthat, "Item", None)
-linkId = "19"
-print("RDF TYPE", rdf_type_ref, linkId)
-instance = ifixthat.search_one(is_a=rdf_type_ref, iri=f"*#{linkId}")
-print(instance)
-
 if (RUN_REASONER):
     # Open swrl.txt and load the rules from each line
     with open('../swrl.txt', 'r') as file:
