@@ -1,11 +1,13 @@
-from flask import render_template
+from flask import render_template, redirect
 from rdflib import URIRef
 from .views import main_bp, Link, ifixthat, shacl_results
 
 @main_bp.route("/Part/<part>")
 def part_page(part: str) -> str:
     """The part page"""
-    part_instance = ifixthat.search_one(type=ifixthat.Part, iri=f"*{part}")
+    part_instance = ifixthat.search_one(type=ifixthat.Part, iri=f"*#{part}")
+    if part_instance is None:
+        return redirect('/')
 
     uri = URIRef(part_instance.iri)
     errors = list(filter(lambda shacl_result: shacl_result.get('focusNode', None) == uri, shacl_results))

@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect
 from rdflib import URIRef
 
 from .views import main_bp, Link, ifixthat, shacl_results
@@ -6,7 +6,9 @@ from .views import main_bp, Link, ifixthat, shacl_results
 @main_bp.route("/Step/<step>")
 def step_page(step: str) -> str:
     """The step page"""
-    step_instance = ifixthat.search_one(type=ifixthat.Step, iri=f"*{step}")
+    step_instance = ifixthat.search_one(type=ifixthat.Step, iri=f"*#{step}")
+    if step_instance is None:
+        return redirect('/')
 
     uri = URIRef(step_instance.iri)
     errors = list(filter(lambda shacl_result: shacl_result.get('focusNode', None) == uri, shacl_results))

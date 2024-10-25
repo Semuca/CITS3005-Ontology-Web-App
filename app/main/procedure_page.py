@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect
 from rdflib import URIRef
 
 from .views import main_bp, Link, ifixthat, shacl_results
@@ -6,7 +6,9 @@ from .views import main_bp, Link, ifixthat, shacl_results
 @main_bp.route("/Procedure/<procedure>")
 def procedure_page(procedure: str) -> str:
     """The procedure page"""
-    procedure_instance = ifixthat.search_one(type=ifixthat.Procedure, iri=f"*{procedure}")
+    procedure_instance = ifixthat.search_one(type=ifixthat.Procedure, iri=f"*#{procedure}")
+    if procedure_instance is None:
+        return redirect('/')
 
     uri = URIRef(procedure_instance.iri)
     errors = list(filter(lambda shacl_result: shacl_result.get('focusNode', None) == uri, shacl_results))
