@@ -1,30 +1,74 @@
 {% extends "common/modal.html" %}
 
 {% block content %}
-    <div id="search-tabs" class="tab-container">
-        <div class="tabs">
-            <button onclick="openTab(event, 'search-tabs', 'search-procedure-tab')">Procedures</button>
-            <button onclick="openTab(event, 'search-tabs', 'search-part-tab')">Parts</button>
-            <button onclick="openTab(event, 'search-tabs', 'search-item-tab')">Items</button>
-            <button onclick="openTab(event, 'search-tabs', 'search-tool-tab')">Tools</button>
-        </div>
-
-        <div id="search-procedure-tab" class="tab-content active" data-rdf-type="Procedure">
-            <label>Title</label>
-            <input type="text" id="searchInput" placeholder="Search for procedure titles...">
-        </div>
-        <div id="search-part-tab" class="tab-content" data-rdf-type="Part">
-            <label>Name</label>
-            <input type="text" id="searchInput" placeholder="Search for part names...">
-        </div>
-        <div id="search-item-tab" class="tab-content" data-rdf-type="Item">
-            <label>Name</label>
-            <input type="text" id="searchInput" placeholder="Search for item names...">
-        </div>
-        <div id="search-tool-tab" class="tab-content" data-rdf-type="Tool">
-            <label>Name</label>
-            <input type="text" id="searchInput" placeholder="Search for tool names...">
-        </div>
+<div id="search-tabs" class="tab-container">
+    <div class="tabs">
+        <button onclick="openTab(event, 'search-tabs', 'search-procedure-tab')">Procedures</button>
+        <button onclick="openTab(event, 'search-tabs', 'search-part-tab')">Parts</button>
+        <button onclick="openTab(event, 'search-tabs', 'search-item-tab')">Items</button>
+        <button onclick="openTab(event, 'search-tabs', 'search-tool-tab')">Tools</button>
     </div>
-    <button id="searchButton">Search</button>
+
+    <div
+        id="search-procedure-tab"
+        class="tab-content active"
+        data-rdf-type="Procedure"
+    >
+        <label>Title</label>
+        <input
+            type="text"
+            id="searchInput"
+            class="property-input"
+            data-property="http://www.w3.org/2000/01/rdf-schema#label"
+            placeholder="Search for procedure titles..."
+        />
+    </div>
+    <div
+        id="search-part-tab"
+        class="tab-content"
+        data-rdf-type="Part"
+    >
+        <label>Name</label>
+        <input
+            type="text"
+            id="searchInput"
+            data-property="http://www.w3.org/2000/01/rdf-schema#label"
+            placeholder="Search for part names..."
+        />
+    </div>
+    <div
+        id="search-item-tab"
+        class="tab-content"
+        data-rdf-type="Item"
+    >
+        <label>Name</label>
+        <input
+            type="text"
+            id="searchInput"
+            data-property="http://www.w3.org/2000/01/rdf-schema#label"
+            placeholder="Search for item names..."
+        />
+    </div>
+    <div
+        id="search-tool-tab"
+        class="tab-content"
+        data-rdf-type="Tool"
+    >
+        <label>Name</label>
+        <input
+            type="text"
+            id="searchInput"
+            data-property="http://www.w3.org/2000/01/rdf-schema#label"
+            placeholder="Search for tool names..."
+        />
+        <label>URLs</label>
+        <input
+            type="text"
+            id="supplierUrl"
+            data-property="http://ifixthat.org/supplierUrl"
+            placeholder="Search for tool supplier URLs..."
+        />
+    </div>
+</div>
+<button id="searchButton">Search</button>
 {% endblock %}

@@ -56,6 +56,10 @@ searchButton.addEventListener("click", () => {
         _url.searchParams.set('name', searchInput.value);
     }
 
-    // console.log(_url.toString());
+    // const supplierUrl = selectedTabWindow.querySelector('#supplierUrl').value;
+    // if (type === "Tool" && supplierUrl) {
+    //     _url.searchParams.set('supplierUrl', supplierUrl)
+    // }
+
     window.location.href = _url.toString();
 });
