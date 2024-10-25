@@ -3,7 +3,7 @@
 import json
 from typing import Self
 from flask import Blueprint
-from owlready2 import get_ontology, default_world, sync_reasoner_pellet, Imp
+from owlready2 import *
 from pyshacl import validate
 from rdflib import Graph, Namespace
 
@@ -38,6 +38,12 @@ class Link:
         self.icon = self.type_to_icon_map.get(self.rdf_type, 'help')
 
 ifixthat = get_ontology("../ontology.owl").load()
+
+rdf_type_ref = getattr(ifixthat, "Item", None)
+linkId = "19"
+print("RDF TYPE", rdf_type_ref, linkId)
+instance = ifixthat.search_one(is_a=rdf_type_ref, iri=f"*#{linkId}")
+print(instance)
 
 if (RUN_REASONER):
     # Open swrl.txt and load the rules from each line
