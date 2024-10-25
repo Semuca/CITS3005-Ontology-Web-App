@@ -1,6 +1,7 @@
 from flask import render_template, request
 
-from .views import main_bp, Link
+from .links import Link
+from .views import main_bp
 from owlready2 import default_world
 
 @main_bp.route("/")

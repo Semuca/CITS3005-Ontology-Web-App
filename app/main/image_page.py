@@ -1,5 +1,7 @@
 from flask import render_template, redirect
-from .views import main_bp, Link, ifixthat
+
+from .links import Link
+from .views import main_bp, ifixthat
 
 @main_bp.route("/Image/<image>")
 def image_page(image: str) -> str:

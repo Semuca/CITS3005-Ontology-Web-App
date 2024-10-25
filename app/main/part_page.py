@@ -1,6 +1,8 @@
 from flask import render_template, redirect
 from rdflib import URIRef
-from .views import main_bp, Link, ifixthat, shacl_results
+
+from .links import Link
+from .views import main_bp, ifixthat, shacl_results
 
 @main_bp.route("/Part/<part>")
 def part_page(part: str) -> str:
