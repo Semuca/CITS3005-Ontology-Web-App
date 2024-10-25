@@ -3,7 +3,7 @@
 import json
 from typing import Self
 from flask import Blueprint
-from owlready2 import get_ontology, default_world, sync_reasoner_pellet
+from owlready2 import get_ontology, default_world, sync_reasoner_pellet, Imp
 from pyshacl import validate
 from rdflib import Graph, Namespace
 
@@ -38,11 +38,21 @@ class Link:
 ifixthat = get_ontology("../ontology.owl").load()
 
 # Open swrl.txt and load the rules from each line
+with open('../swrl.txt', 'r') as file:
+    lines = file.readlines()
 
+with ifixthat:
+    for line in lines:
+        imp = Imp()
+        imp.set_as_rule(line)
+
+# Run the reasoner
 print("REASONER FINISHED")
 sync_reasoner_pellet(infer_property_values=True, infer_data_property_values=True)
 print("REASONER FINISHED")
 
+
+# Create a graph from the ontology
 g = default_world.as_rdflib_graph()
 
 domain = "http://ifixthat.org/"
@@ -53,6 +63,7 @@ g.bind("part", f"{domain}Part#")
 g.bind("tool", f"{domain}Tool#")
 g.bind("step", f"{domain}Step#")
 g.bind("image", f"{domain}Image#")
+
 
 # Perform SHACL validation
 shacl = Namespace("http://www.w3.org/ns/shacl#")
@@ -67,6 +78,8 @@ conforms, results_graph, results_text = validate(
 )
 print("VALIDATION FINISHED")
 
+
+# Collect the error results
 print("COLLECTING RESULTS")
 dup_shacl_results = []
 for result in results_graph.subjects():
