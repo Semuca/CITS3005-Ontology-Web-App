@@ -21,9 +21,13 @@ class Link:
         'Tool': 'construction',
     }
 
-    def __init__(self: Self, thing: any, title: str = None, subtitle: str = None, images: list[str] = [], hideContent: bool = False) -> None:
+    def __init__(self: Self, thing: any, property_name: str, child_uri: str=None, parent_uri:str=None, title: str = None, subtitle: str = None, images: list[str] = [], hideContent: bool = False) -> None:
         self.ref = thing
         self.uri = thing.iri
+        self.property_name = property_name
+        self.child_uri = child_uri
+        self.parent_uri = parent_uri
+        self.hideDelete = child_uri is None and parent_uri is None
 
         self.images = images
         self.hideContent = hideContent

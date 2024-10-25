@@ -1,22 +1,37 @@
 {% for link in links %}
-    <a class="link" href="{{ link.url }}">
-        <div style="display: flex; justify-content: space-between">
-            <div>
-                {% if not link.hideContent %}
-                    <strong>{{ link.title }}</strong>
+<a class="link" href="{{ link.url }}">
+	<div style="display: flex; justify-content: space-between">
+		<div>
+			{% if not link.hideContent %}
+			<strong>{{ link.title }}</strong>
 
-                    <div style="display: flex; align-items: center; gap: 4px; margin-top: 8px">
-                        <span class="material-symbols-outlined">{{ link.icon }}</span>
-                        <span>{{ link.subtitle }}</span>
-                    </div>
-                {% endif %}
-                
-                {% for image in link.images %}
-                    <img src="{{ image }}" />
-                {% endfor %}
-            </div>
+			<div
+				style="
+					display: flex;
+					align-items: center;
+					gap: 4px;
+					margin-top: 8px;
+				"
+			>
+				<span class="material-symbols-outlined">{{ link.icon }}</span>
+				<span>{{ link.subtitle }}</span>
+			</div>
+			{% endif %} {% for image in link.images %}
+			<img src="{{ image }}" />
+			{% endfor %}
+		</div>
 
-            <button class="openDeleteButton" data-uri="{{ link.uri }}">Delete</button>
-        </div>
-    </a>
+		{% if not link.hideDelete %}
+		<button
+			class="deleteLinkButton"
+			parent-uri="{{ link.parent_uri }}"
+			child-uri="{{ link.child_uri }}"
+			data-uri="{{ link.uri }}"
+			data-property="{{ link.property_name }}"
+		>
+			Delete
+		</button>
+		{% endif %}
+	</div>
+</a>
 {% endfor %}

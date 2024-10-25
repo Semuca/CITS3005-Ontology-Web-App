@@ -13,9 +13,9 @@ def part_page(part: str) -> str:
     errors = list(filter(lambda shacl_result: shacl_result.get('focusNode', None) == uri, shacl_results))
 
     label = part_instance.label[0]
-    items = [Link(item) for item in part_instance.partOf]
+    items = [Link(item, 'http://ifixthat.org/partOf', parent_uri=part_instance.iri) for item in part_instance.partOf]
 
     procedures_for_part = ifixthat.search(type=ifixthat.Procedure, guideOf=part_instance)
-    procedures = [Link(procedure) for procedure in procedures_for_part]
+    procedures = [Link(procedure, 'http://ifixthat.org/guideOf', child_uri=part_instance.iri) for procedure in procedures_for_part]
 
     return render_template('part.html', errors=errors, uri=part_instance.iri, label=label, items=items, procedures=procedures)

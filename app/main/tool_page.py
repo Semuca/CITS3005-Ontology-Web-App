@@ -17,8 +17,8 @@ def tool_page(tool: str) -> str:
     supplier_url = tool_instance.supplierUrl[0] if len(tool_instance.supplierUrl) > 0 else ""
 
     procedures_requiring_tool = ifixthat.search(type=ifixthat.Procedure, requiresTool=tool_instance)
-    procedures = [Link(procedure) for procedure in procedures_requiring_tool]
+    procedures = [Link(procedure, 'http://ifixthat.org/requiresTool', child_uri=tool_instance.iri) for procedure in procedures_requiring_tool]
 
-    images = [Link(has_image, images=has_image.dataUrl, hideContent=True) for has_image in tool_instance.hasImage]
+    images = [Link(has_image, 'http://ifixthat.org/hasImage', parent_uri=tool_instance.iri, images=has_image.dataUrl, hideContent=True) for has_image in tool_instance.hasImage]
 
     return render_template('tool.html', errors=errors, uri=tool_instance.iri, label=label, images=images, supplier_url=supplier_url, procedures=procedures)

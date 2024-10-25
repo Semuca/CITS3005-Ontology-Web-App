@@ -15,9 +15,9 @@ def procedure_page(procedure: str) -> str:
 
     label = procedure_instance.label[0]
 
-    items = [Link(item) for item in procedure_instance.guideOf if isinstance(item, ifixthat.Item)]
-    parts = [Link(part) for part in procedure_instance.guideOf if isinstance(part, ifixthat.Part)]
-    tools = [Link(tool) for tool in procedure_instance.requiresTool]
+    items = [Link(item, 'http://ifixthat.org/guideOf', parent_uri=procedure_instance.iri) for item in procedure_instance.guideOf if isinstance(item, ifixthat.Item)]
+    parts = [Link(part, 'http://ifixthat.org/guideOf', parent_uri=procedure_instance.iri) for part in procedure_instance.guideOf if isinstance(part, ifixthat.Part)]
+    tools = [Link(tool, 'http://ifixthat.org/requiresTool', parent_uri=procedure_instance.iri) for tool in procedure_instance.requiresTool]
 
     steps = []
     for step in procedure_instance.hasStep:
@@ -27,6 +27,6 @@ def procedure_page(procedure: str) -> str:
         steps.append((step_ref, step_actions, step_images))
 
     steps.sort(key=lambda x: x[0].order)
-    steps = [Link(step_ref, subtitle=step_actions, images=step_images) for step_ref, step_actions, step_images in steps]
+    steps = [Link(step_ref, 'http://ifixthat.org/hasStep', parent_uri=procedure_instance.iri, subtitle=step_actions, images=step_images) for step_ref, step_actions, step_images in steps]
 
     return render_template('procedure.html', errors=errors, uri=procedure_instance.iri, label=label, steps=steps, items=items, parts=parts, tools=tools)
