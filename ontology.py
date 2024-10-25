@@ -156,6 +156,7 @@ def load_item(item_name: str, ancestors: list[str]):
 
     # subCategoryOf
     if ancestors[0] == "Root":
+        name_to_item[item_name] = item_instance
         return item_instance
     category_instance = load_item(ancestors[0], ancestors[1:])
     item_instance.subCategoryOf.append(category_instance)
