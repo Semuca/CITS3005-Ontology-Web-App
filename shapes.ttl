@@ -14,6 +14,10 @@ ifixthat:ProcedureShape a sh:NodeShape ;
         sh:minCount 1 ;
     ] ;
     sh:property [
+        sh:path ifixthat:lastIri ;
+        sh:node xsd:decimal ;
+    ] ;
+    sh:property [
         sh:path rdfs:label ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
@@ -49,6 +53,10 @@ ifixthat:ItemShape a sh:NodeShape ;
         sh:node owl:NamedIndividual ;
     ] ;
     sh:property [
+        sh:path ifixthat:lastIri ;
+        sh:node xsd:decimal ;
+    ] ;
+    sh:property [
         sh:path ifixthat:subCategoryOf ;
         sh:node ifixthat:ItemShape ;
     ] ;
@@ -64,6 +72,10 @@ ifixthat:PartShape a sh:NodeShape ;
     sh:property [
         sh:path rdf:type ;
         sh:node owl:NamedIndividual ;
+    ] ;
+    sh:property [
+        sh:path ifixthat:lastIri ;
+        sh:node xsd:decimal ;
     ] ;
     sh:property [
         sh:path ifixthat:partOf ;
@@ -100,6 +112,10 @@ ifixthat:StepShape a sh:NodeShape ;
         sh:node owl:NamedIndividual ;
     ];
     sh:property [
+        sh:path ifixthat:lastIri ;
+        sh:node xsd:decimal ;
+    ] ;
+    sh:property [
         sh:path ifixthat:hasImage ;
         sh:node ifixthat:Image ;
     ] ;
@@ -125,6 +141,10 @@ ifixthat:ImageShape a sh:NodeShape ;
         sh:node owl:NamedIndividual
     ];
     sh:property [
+        sh:path ifixthat:lastIri ;
+        sh:node xsd:decimal ;
+    ] ;
+    sh:property [
         sh:path ifixthat:dataUrl ;
         sh:datatype xsd:string ;
         sh:minCount 1 ;
@@ -136,7 +156,11 @@ ifixthat:ToolShape a sh:NodeShape ;
     sh:property [
         sh:path rdf:type ;
         sh:node owl:NamedIndividual ;
-    ];
+    ] ;
+    sh:property [
+        sh:path ifixthat:lastIri ;
+        sh:node xsd:decimal ;
+    ] ;
     sh:property [
         sh:path ifixthat:hasImage ;
         sh:node ifixthat:Image ;
