@@ -9,11 +9,20 @@
 
 {% for error in errors %}
     <div style="padding: 10px; margin-top: 10px; background-color: salmon; border-radius: 4px; border: 2px solid indianred;">
-        <p>Type: {{ error.detail.type }}</p>
-        <p>Source Constraint Component: {{ error.detail.sourceConstraintComponent }}</p>
-        <p>Source Shape: {{ error.detail.sourceShape }}</p>
-        <p>Result Severity: {{ error.detail.resultSeverity }}</p>
-        <p>Result Path: {{ error.detail.resultPath }}</p>
-        <p>Result Message: {{ error.detail.resultMessage }}</p>
+        {% if error.detail %}
+            <p>Type: {{ error.detail.type }}</p>
+            <p>Source Constraint Component: {{ error.detail.sourceConstraintComponent }}</p>
+            <p>Source Shape: {{ error.detail.sourceShape }}</p>
+            <p>Result Severity: {{ error.detail.resultSeverity }}</p>
+            <p>Result Path: {{ error.detail.resultPath }}</p>
+            <p>Result Message: {{ error.detail.resultMessage }}</p>
+        {% else %}
+            <p>Type: {{ error.type }}</p>
+            <p>Source Constraint Component: {{ error.sourceConstraintComponent }}</p>
+            <p>Source Shape: {{ error.sourceShape }}</p>
+            <p>Result Severity: {{ error.resultSeverity }}</p>
+            <p>Result Path: {{ error.resultPath }}</p>
+            <p>Result Message: {{ error.resultMessage }}</p>
+        {% endif %}
     </div>
 {% endfor %}
