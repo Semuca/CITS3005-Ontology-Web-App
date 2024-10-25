@@ -103,7 +103,7 @@ def search_page() -> str:
 
     results = []
     for row in default_world.sparql(query):
-        results.append(Link(row[0]))
+        results.append(Link(row[0], None))
 
     return render_template('search.html', results=results)
 

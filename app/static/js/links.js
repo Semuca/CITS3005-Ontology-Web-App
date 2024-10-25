@@ -10,8 +10,6 @@ for (let addLinkButton of addLinkButtons) {
 		const inputField = parentDiv.querySelector("#idInput");
 		const inputtedId = inputField.value;
 
-		console.log(parentUri, childUri, linkProperty, objectType, inputtedId);
-
 		fetch("/api/links", {
 			method: "POST",
 			headers: {
@@ -23,6 +21,48 @@ for (let addLinkButton of addLinkButtons) {
 				property: linkProperty,
 				linkId: inputtedId,
 				objectType: objectType,
+			}),
+		})
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText);
+				}
+				return response.text();
+			})
+			.then((data) => {
+				location.reload();
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	});
+}
+
+const deleteLinkButtons = document.getElementsByClassName("deleteLinkButton");
+
+for (let deleteLinkButton of deleteLinkButtons) {
+	deleteLinkButton.addEventListener("click", (event) => {
+		event.stopPropagation();
+		event.preventDefault(); // Prevent the default action (following the link)
+
+		let parentUri = event.target.getAttribute("parent-uri");
+		let childUri = event.target.getAttribute("child-uri");
+		const uri = event.target.getAttribute("data-uri");
+		const linkProperty = event.target.getAttribute("data-property");
+
+		if (parentUri === "None") parentUri = null;
+		if (childUri === "None") childUri = null;
+
+		fetch("/api/links", {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				parentUri: parentUri,
+				childUri: childUri,
+				uri: uri,
+				property: linkProperty,
 			}),
 		})
 			.then((response) => {

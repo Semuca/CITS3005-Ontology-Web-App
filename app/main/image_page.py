@@ -11,9 +11,9 @@ def image_page(image: str) -> str:
     url = image_instance.dataUrl[0]
 
     steps_for_item = ifixthat.search(type=ifixthat.Step, hasImage=image_instance)
-    steps = [Link(step) for step in steps_for_item]
+    steps = [Link(step, 'http://ifixthat.org/hasImage', child_uri=image_instance.iri) for step in steps_for_item]
 
     tools_of_item = ifixthat.search(type=ifixthat.Tool, hasImage=image_instance)
-    tools = [Link(tool) for tool in tools_of_item]
+    tools = [Link(tool, 'http://ifixthat.org/hasImage', child_uri=image_instance.iri) for tool in tools_of_item]
 
     return render_template('image.html', uri=image_instance.iri, url=url, steps=steps, tools=tools)
