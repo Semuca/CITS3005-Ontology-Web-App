@@ -9,7 +9,7 @@ def search_page() -> str:
 
     # Parameters
     rdf_type = request.args.get('rdf_type', '?type')
-    search = request.args.get('name', '')
+    search = request.args.get('http://www.w3.org/2000/01/rdf-schema#label', '')
 
     pageSize = int(request.args.get('pageSize', 20))
     page = int(request.args.get('page', 1))

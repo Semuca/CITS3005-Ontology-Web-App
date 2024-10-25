@@ -21,17 +21,83 @@ This is a Flask application to explore and manipulate the Game Console data from
 1. Set up your python virtual environment using `python -m venv .venv`.
 2. Activate your virtual environment using `source .venv/bin/activate`, or `.venv/Scripts/activate` if you're on Windows.
 3. Install the required packages using `pip install -r requirements.txt`.
-4. Run the application by using `cd app && python web_app.py`
+4. Install java on your system if it's not already so that the reasoner can run. If on Windows, make sure that you're using 64-bit Java, or the reasoner will be unable to load.
+5. Run the application by using `cd app && python web_app.py`. This might take a while to start up- the reasoner needs to run over the ontology.
+6. You should now be able to access the application by going to [http://localhost:5000.](http://localhost:5000)
 
-### Exploring the knowledge graph
+### Searching the knowledge graph
 
-### Adding new items to the knowledge graph
+When you open the app, you should see the following page:
+
+<img src="docs/1.png" height="400">
+
+This is the search page without any query present- it will just present assorted items. We can refine this by searching. Let's open the form by pressing the top-right 'Search' button.
+
+<img src="docs/2.png" height="400">
+
+The search form allows you to search through procedures, parts, items, and tools. Each one has a different form, but for our case we'll only search through procedures. This query searches for:
+- Forms that have the term 'Power switch' in their name, and
+- Forms that have 3 or more steps
+
+We can see the results below:
+
+<img src="docs/3.png" height="400">
+
+Let's click on 'Hyperkin Retron 3 Power Switch Replacement'.
+
+<img src="docs/4.png" height="400">
+
+When we view our guide, we can see that PyShacl has detected two errors on this page. The errors claim that there is no value for 'supplierUrl' on tools 149 and 150.
+
+<img src="docs/5.png" height="400">
+
+As we scroll down we can see steps that the procedure contains with their images.
+
+<img src="docs/6.png" height="400">
+
+After the steps, we can see what parts, items, and tools this procedure is for. This procedure operates on the 'Power Switch' part (presumably for the Hyperkin Retron 3). We can click on that block to navigate to the part, but we won't do that for now. Instead we can hover the tools to reveal the hovered link (see in bottom left corner) to discover that 'soldering gun' and 'iron' are tools 149 and 150!
 
 ### Editing items in the knowledge graph
 
+Let's click on the soldering gun tool to go to it's page:
+
+<img src="docs/7.png" height="400">
+
+We can see the error is reiterated here, and indeed the supplier URL is empty. Let's adjust it to a URL of our choosing.
+
+<img src="docs/8.png" height="400">
+
+Reloading the page will verify that the changes have persisted. The error will remain until we restart the application- performing a SHACL validation every API query is not feasible for us.
+
 ### Deleting items in the knowledge graph
 
+Let's navigate back to our procedure page and deal with the other invalid tool a different way.
+
+<img src="docs/6.png" height="400">
+
+Hit the 'delete' button to remove the link to the 'iron' tool.
+
+<img src="docs/9.png" height="400">
+
+If we restart the application, we can now see that all validation has passed for this procedure!
+
+<img src="docs/10.png" height="400">
+
+### Adding new items to the knowledge graph
+
+Let's add a new tool to the first step of our procedure. To add a tool, we'll need the id of the tool we're adding. To get the id, we look at the url on a tool view page. We'll add an 'opening tool' as a required tool for the first step of this procedure.
+
+<img src="docs/11.png" height="400">
+
+Click on the 'Step 1' link to go to the step, type in the tool id (2) and press 'Add' to add the tool to the step.
+
+<img src="docs/12.png" height="400">
+
+TODO: When SWRL is fixed, navigate back and reload the website and Ta Da! The tool is now listed under the required tools.
+
 ### Modifying the ontology
+To add new rules to the ontology, add the rule in Conjuctive Normal Form to the swrl.txt file on a single line. The rule will be applied to the reasoner on the next start of the Flask application.
+
 
 ## Ontology structure
 

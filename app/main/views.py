@@ -9,7 +9,7 @@ from rdflib import Graph, Namespace
 
 main_bp = Blueprint('main_bp', __name__)
 
-RUN_REASONER = False
+RUN_REASONER = True
 
 class Link:
 

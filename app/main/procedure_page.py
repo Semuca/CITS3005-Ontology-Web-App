@@ -27,6 +27,6 @@ def procedure_page(procedure: str) -> str:
         steps.append((step_ref, step_actions, step_images))
 
     steps.sort(key=lambda x: x[0].order)
-    steps = [Link(step_ref, 'http://ifixthat.org/hasStep', parent_uri=procedure_instance.iri, subtitle=step_actions, images=step_images) for step_ref, step_actions, step_images in steps]
+    steps = [Link(step_ref, 'http://ifixthat.org/hasStep', parent_uri=procedure_instance.iri, title=f"Step {index + 1}", subtitle=step_actions, images=step_images) for index, (step_ref, step_actions, step_images) in enumerate(steps)]
 
     return render_template('procedure.html', errors=errors, uri=procedure_instance.iri, label=label, steps=steps, items=items, parts=parts, tools=tools)
