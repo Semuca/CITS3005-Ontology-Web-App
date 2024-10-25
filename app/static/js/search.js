@@ -51,15 +51,16 @@ searchButton.addEventListener("click", () => {
     const type = selectedTabWindow.getAttribute("data-rdf-type");
     _url.searchParams.set('rdf_type', `ifixthat:${type}`);
 
-    const searchInput = selectedTabWindow.querySelector('#searchInput');
-    if (searchInput.value) {
-        _url.searchParams.set('name', searchInput.value);
-    }
+    const propertyInputs =
+		selectedTabWindow.querySelectorAll(".property-input");
 
-    // const supplierUrl = selectedTabWindow.querySelector('#supplierUrl').value;
-    // if (type === "Tool" && supplierUrl) {
-    //     _url.searchParams.set('supplierUrl', supplierUrl)
-    // }
+    propertyInputs.forEach((input) => {
+		const property = input.getAttribute("data-property");
+		const value = input.value;
+		if (value) {
+            _url.searchParams.set(property, value);
+		}
+	});
 
     window.location.href = _url.toString();
 });
