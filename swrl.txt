@@ -1,0 +1,4 @@
+Item(?x) ^ subCategoryOf(?x, ?y) ^ subCategoryOf(?y, ?z) -> subCategoryOf(?x, ?z)
+Part(?x) ^ partOf(?x, ?y) ^ partOf(?y, ?z) -> partOf(?x, ?z)
+Step(?x) ^ usesTool(?x, ?y) ^ hasStep(?z, ?x) -> requiresTool(?z, ?y)
+Procedure(?x) ^ guideOf(?x, ?z) ^ guideOf(?y, ?z) -> subProcedureOf(?x, ?y)

@@ -79,10 +79,6 @@ with ifixthat:
         domain = [Tool]
         range = [str]
 
-    # Step schema
-    # class hasImage(ObjectProperty): - already defined in Tool schema
-    #     domain = [Tool | Step]
-    #     range = [Image]
 
     class usesTool(ObjectProperty):
         domain = [Step]
