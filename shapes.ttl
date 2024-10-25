@@ -41,7 +41,7 @@ ifixthat:ProcedureShape a sh:NodeShape ;
     ] ;
     sh:property [
         sh:path ifixthat:hasStep ;
-        sh:node ifixthat:StepShape ;
+        sh:node ifixthat:OrderedStepShape ;
         sh:minCount 1 ;
     ] .
 
@@ -97,7 +97,7 @@ ifixthat:OrderedStepShape a sh:NodeShape ;
     ] ;
     sh:property [
         sh:path ifixthat:details ;
-        sh:node ifixthat:Step ;
+        sh:node ifixthat:StepShape ;
         sh:minCount 1 ;
     ] ;
     sh:property [
@@ -168,7 +168,6 @@ ifixthat:ToolShape a sh:NodeShape ;
     sh:property [
         sh:path rdfs:label ;
         sh:datatype xsd:string ;
-        sh:minCount 1 ;
     ] ;
     sh:property [
         sh:path ifixthat:supplierUrl ;

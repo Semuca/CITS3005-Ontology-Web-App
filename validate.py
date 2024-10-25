@@ -2,9 +2,18 @@
 import json
 from rdflib import Graph, Namespace
 from pyshacl import validate
-from owlready2 import get_ontology, default_world, sync_reasoner_pellet
+from owlready2 import get_ontology, default_world, sync_reasoner_pellet, Imp
 
-get_ontology("ontology.owl").load()
+ifixthat = get_ontology("ontology.owl").load()
+
+# Open swrl.txt and load the rules from each line
+with open('swrl.txt', 'r') as file:
+    lines = file.readlines()
+
+with ifixthat:
+    for line in lines:
+        imp = Imp()
+        imp.set_as_rule(line)
 
 # Perform reasoning
 print("STARTING REASONER")
