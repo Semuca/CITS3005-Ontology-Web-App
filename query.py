@@ -97,3 +97,102 @@ print("\nQuery for 'What are the step ids in order for Procedure 1562 and their 
 for row in graph.query(query_ordered_step_actions):
     print(parse_output_row(row))
 
+# Query for 'What are the Items that are second-level in the hierarchy of Items?'
+query_top_level_items = """
+    SELECT ?item ?label
+    WHERE {
+        ?topItem a ifixthat:Item .
+        FILTER NOT EXISTS {
+            ?topItem ifixthat:subCategoryOf ?parentItem .
+        }
+
+        ?item ifixthat:subCategoryOf ?topItem ;
+            rdfs:label ?label .
+    }
+"""
+
+print("\nQuery for 'What are the top level Items?'")
+for row in graph.query(query_top_level_items):
+    print(parse_output_row(row))
+
+# Query for 'What are all the properties and their values for Procedure 1562?'
+query_procedure_properties = """
+    SELECT ?property ?value
+    WHERE {
+        procedure:1562 ?property ?value .
+    }
+"""
+
+print("\nQuery for 'What are all the properties and their values for Procedure 1562?'")
+for row in graph.query(query_procedure_properties):
+    print(parse_output_row(row))
+
+# Query for 'What are all the properties and their values for Step 18938?'
+query_step_properties = """
+    SELECT ?property ?value
+    WHERE {
+        step:18938 ?property ?value .
+    }
+"""
+
+print("\nQuery for 'What are all the properties and their values for Step 18938?'")
+for row in graph.query(query_step_properties):
+    print(parse_output_row(row))
+
+# Query for 'What are the Steps that have more than 2 distinct index in their corresponding Procedures?'
+query_multi_index_steps = """
+    SELECT ?step (COUNT(DISTINCT ?order) AS ?distinctOrders)
+    WHERE {
+        ?step rdf:type ifixthat:Step .
+        ?orderedStep ifixthat:details ?step .
+        ?orderedStep ifixthat:order ?order .
+    }
+    GROUP BY ?step
+    HAVING (COUNT(DISTINCT ?order) > 2)
+    ORDER BY DESC(?distinctOrders)
+"""
+
+print("\nQuery for 'What are the Steps that have more than 1 distinct index in their corresponding Procedures?'")
+for row in graph.query(query_multi_index_steps):
+    print(parse_output_row(row))
+
+# Query for 'What are all the tools used in Procedures that are related to the Item and parts of 'Game Boy Pocket'?'
+query_tools_for_item = """
+    SELECT DISTINCT ?tool ?label
+    WHERE {
+        ?gameboy a ifixthat:Item ;
+                rdfs:label "Game Boy Pocket" .
+
+        ?part ifixthat:partOf+ ?gameboy .
+        {
+            ?procedure ifixthat:guideOf ?gameboy .
+        }
+        UNION
+        {
+            ?procedure ifixthat:guideOf ?part .
+        }
+        ?procedure ifixthat:requiresTool ?tool .
+        ?tool rdfs:label ?label .
+    }
+"""
+
+print("\nQuery for 'What are all the tools used in Procedures that are related to the Item and parts of 'Game Boy Pocket'?'")
+for row in graph.query(query_tools_for_item):
+    print(parse_output_row(row))
+
+# Query for 'What images are used in more than 1 Tool or Part?'
+query_images_for_tools_and_parts = """
+    SELECT ?image ?url (COUNT(DISTINCT ?toolOrPart) AS ?usageCount)
+    WHERE {
+        ?toolOrPart ifixthat:hasImage ?image .
+        ?toolOrPart a ?type .
+
+        ?image ifixthat:dataUrl ?url .
+    }
+    GROUP BY ?image
+    HAVING (COUNT(DISTINCT ?toolOrPart) > 1)
+"""
+
+print("\nQuery for 'What images are used in more than 1 Tool or Part?'")
+for row in graph.query(query_images_for_tools_and_parts):
+    print(parse_output_row(row))
