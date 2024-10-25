@@ -185,3 +185,4 @@ In order to store Steps in an ordered list, an intermediate class was also creat
 ### Building the ontology
 
 ### Validating the ontology
+To validate the ontology, run `python validate.py`. There will be some errors that show up with required supplier URLs- this is so we can demonstrate the website error detection system.
