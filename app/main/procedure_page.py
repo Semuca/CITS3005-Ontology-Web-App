@@ -1,11 +1,15 @@
 from flask import render_template
+from rdflib import URIRef
 
-from .views import main_bp, Link, ifixthat
+from .views import main_bp, Link, ifixthat, shacl_results
 
 @main_bp.route("/Procedure/<procedure>")
 def procedure_page(procedure: str) -> str:
     """The procedure page"""
     procedure_instance = ifixthat.search_one(type=ifixthat.Procedure, iri=f"*{procedure}")
+
+    uri = URIRef(procedure_instance.iri)
+    errors = list(filter(lambda shacl_result: shacl_result.get('focusNode', None) == uri, shacl_results))
 
     label = procedure_instance.label[0]
     parts = [Link(part) for part in procedure_instance.guideOf]
@@ -21,4 +25,4 @@ def procedure_page(procedure: str) -> str:
     steps.sort(key=lambda x: x[0].order)
     steps = [Link(step_ref, subtitle=step_actions, images=step_images) for step_ref, step_actions, step_images in steps]
 
-    return render_template('procedure.html', uri=procedure_instance.iri, label=label, steps=steps, parts=parts, tools=tools)
+    return render_template('procedure.html', errors=errors, uri=procedure_instance.iri, label=label, steps=steps, parts=parts, tools=tools)
