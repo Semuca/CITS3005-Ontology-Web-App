@@ -12,7 +12,7 @@
     border: 1px solid silver;
     background-color: white;
     cursor: pointer;
-    flex: 1; /* Makes all buttons equal width */
+    flex: 1;
 }
 
 .tab-button.active {
@@ -21,14 +21,14 @@
 }
 
 .tab-content {
-    display: none; /* Hide all tab content by default */
+    display: none;
     padding: 20px;
     border: 1px solid lightgray;
-    border-top: none; /* No top border for content */
+    border-top: none;
     flex-direction: column;
     gap: 8px;
 }
 
 .tab-content.active {
-    display: flex; /* Show active tab content */
+    display: flex;
 }
