@@ -1,6 +1,5 @@
-{% extends "common/base.html" %} {% block content %}
-
-{% include "common/errors.html" %}
+{% extends "common/base.html" %} {% block content %} {% include
+"common/errors.html" %}
 
 <h2>Step actions:</h2>
 <p
@@ -11,19 +10,36 @@
 	{{ actions }}
 </p>
 
-{% if images %}
-<h2>This step has images:</h2>
-{% else %}
-<h2>This step does not have any images:</h2>
-{% endif %} {% with links=images %} {% include "common/links.html" %} {% endwith
-%} {% if tools %}
-<h2>This step uses tools:</h2>
-{% else %}
-<h2>This step uses no tools:</h2>
-{% endif %} {% with links=tools %} {% include "common/links.html" %} {% endwith
-%} {% if procedures %}
-<h2>This step is part of procedures:</h2>
-{% else %}
-<h2>This step is not part of any procedures:</h2>
-{% endif %} {% with links=procedures %} {% include "common/links.html" %} {%
-endwith %} {% endblock %}
+<h2>Images</h2>
+<div
+	data-property="http://ifixthat.org/hasImage"
+	parent-uri="{{ uri }}"
+	data-object-type="Image"
+>
+	<input type="number" placeholder="Image ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=images %} {% include "common/links.html" %} {% endwith %}
+
+<h2>Uses tools</h2>
+<div
+	data-property="http://ifixthat.org/usesTool"
+	parent-uri="{{ uri }}"
+	data-object-type="Tool"
+>
+	<input type="number" placeholder="Tool ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=tools %} {% include "common/links.html" %} {% endwith %}
+
+<h2>Part of procedures</h2>
+<div
+	data-property="http://ifixthat.org/hasStep"
+	child-uri="{{ uri }}"
+	data-object-type="Procedure"
+>
+	<input type="number" placeholder="Procedure ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=procedures %} {% include "common/links.html" %} {% endwith %} {%
+endblock %}

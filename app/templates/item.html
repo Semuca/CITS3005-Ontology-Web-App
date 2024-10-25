@@ -1,6 +1,5 @@
-{% extends "common/base.html" %} {% block content %}
-
-{% include "common/errors.html" %}
+{% extends "common/base.html" %} {% block content %} {% include
+"common/errors.html" %}
 
 <h2>Item name:</h2>
 <p
@@ -10,25 +9,50 @@
 >
 	{{ label }}
 </p>
+<button class="openDeleteButton" data-uri="{{ uri }}">Delete Item</button>
 
-{% if categoryParents %}
-<h2>This item has parents:</h2>
-{% else %}
-<h2>This item has no parents:</h2>
-{% endif %} {% with links=categoryParents %} {% include "common/links.html" %}
-{% endwith %} {% if categoryChildren %}
-<h2>This item has children:</h2>
-{% else %}
-<h2>This item has no children:</h2>
-{% endif %} {% with links=categoryChildren %} {% include "common/links.html" %}
-{% endwith %} {% if parts %}
-<h2>This item has parts:</h2>
-{% else %}
-<h2>This item has no parts:</h2>
-{% endif %} {% with links=parts %} {% include "common/links.html" %} {% endwith
-%} {% if procedures %}
-<h2>This item is used in procedures:</h2>
-{% else %}
-<h2>This item is not used in any procedures:</h2>
-{% endif %} {% with links=procedures %} {% include "common/links.html" %} {%
-endwith %} {% endblock %}
+<h2>Parents</h2>
+<div
+	data-property="http://ifixthat.org/subCategoryOf"
+	parent-uri="{{ uri }}"
+	data-object-type="Item"
+>
+	<input type="number" placeholder="Item ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=categoryParents %} {% include "common/links.html" %} {% endwith %}
+
+<h2>Children</h2>
+<div
+	data-property="http://ifixthat.org/subCategoryOf"
+	child-uri="{{ uri }}"
+	data-object-type="Item"
+>
+	<input type="number" placeholder="Item ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=categoryChildren %} {% include "common/links.html" %} {% endwith
+%}
+
+<h2>Parts</h2>
+<div
+	data-property="http://ifixthat.org/partOf"
+	child-uri="{{ uri }}"
+	data-object-type="Part"
+>
+	<input type="number" placeholder="Part ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=parts %} {% include "common/links.html" %} {% endwith %}
+
+<h2>Procedures</h2>
+<div
+	data-property="http://ifixthat.org/guideOf"
+	child-uri="{{ uri }}"
+	data-object-type="Procedure"
+>
+	<input type="number" placeholder="Procedure ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=procedures %} {% include "common/links.html" %} {% endwith %} {%
+endblock %}

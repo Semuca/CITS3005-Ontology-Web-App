@@ -1,6 +1,5 @@
-{% extends "common/base.html" %} {% block content %}
-
-{% include "common/errors.html" %}
+{% extends "common/base.html" %} {% block content %} {% include
+"common/errors.html" %}
 
 <h2>Procedure name:</h2>
 <p
@@ -11,19 +10,47 @@
 	{{ label }}
 </p>
 
-{% if steps %}
-<h2>This procedure has steps:</h2>
-{% else %}
-<h2>This procedure has no steps:</h2>
-{% endif %} {% with links=steps %} {% include "common/links.html" %} {% endwith
-%} {% if parts %}
-<h2>This procedure requires parts:</h2>
-{% else %}
-<h2>This procedure requires no parts:</h2>
-{% endif %} {% with links=parts %} {% include "common/links.html" %} {% endwith
-%} {% if tools %}
-<h2>This procedure has tools:</h2>
-{% else %}
-<h2>This procedure has no tools:</h2>
-{% endif %} {% with links=tools %} {% include "common/links.html" %} {% endwith
-%} {% endblock %}
+<h2>Steps</h2>
+<div
+	data-property="http://ifixthat.org/hasStep"
+	parent-uri="{{ uri }}"
+	data-object-type="Step"
+>
+	<input type="number" placeholder="Step ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=steps %} {% include "common/links.html" %} {% endwith %}
+
+<h2>For parts</h2>
+<div
+	data-property="http://ifixthat.org/guideOf"
+	parent-uri="{{ uri }}"
+	data-object-type="Part"
+>
+	<input type="number" placeholder="Part ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=parts %} {% include "common/links.html" %} {% endwith %}
+
+<h2>For items</h2>
+<div
+	data-property="http://ifixthat.org/guideOf"
+	parent-uri="{{ uri }}"
+	data-object-type="Item"
+>
+	<input type="number" placeholder="Item ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=items %} {% include "common/links.html" %} {% endwith %}
+
+<h2>Requires tools</h2>
+<div
+	data-property="http://ifixthat.org/requiresTool"
+	parent-uri="{{ uri }}"
+	data-object-type="Tool"
+>
+	<input type="number" placeholder="Tool ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=tools %} {% include "common/links.html" %} {% endwith %} {%
+endblock %}

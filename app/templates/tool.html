@@ -1,6 +1,5 @@
-{% extends "common/base.html" %} {% block content %}
-
-{% include "common/errors.html" %}
+{% extends "common/base.html" %} {% block content %} {% include
+"common/errors.html" %}
 
 <h2>Tool name:</h2>
 <p
@@ -20,20 +19,25 @@
 	{{ supplier_url }}
 </p>
 
-{% if images %}
-    <h2>This tool has images:</h2>
-{% else %}
-    <h2>This tool does not have any images:</h2>
-{% endif %}
+<h2>Images</h2>
+<div
+	data-property="http://ifixthat.org/hasImage"
+	parent-uri="{{ uri }}"
+	data-object-type="Image"
+>
+	<input type="number" placeholder="Image ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=images %} {% include "common/links.html" %} {% endwith %}
 
-{% with links=images %}
-    {% include "common/links.html" %}
-{% endwith %}
-
-
-{% if procedures %}
-<h2>This tool is used in procedures:</h2>
-{% else %}
-<h2>This tool is not used in any procedures:</h2>
-{% endif %} {% with links=procedures %} {% include "common/links.html" %} {%
-endwith %} {% endblock %}
+<h2>Required for procedures</h2>
+<div
+	data-property="http://ifixthat.org/requiresTool"
+	child-uri="{{ uri }}"
+	data-object-type="Procedure"
+>
+	<input type="number" placeholder="Procedure ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=procedures %} {% include "common/links.html" %} {% endwith %} {%
+endblock %}

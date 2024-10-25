@@ -1,6 +1,5 @@
-{% extends "common/base.html" %} {% block content %}
-
-{% include "common/errors.html" %}
+{% extends "common/base.html" %} {% block content %} {% include
+"common/errors.html" %}
 
 <h2>Part name:</h2>
 <p
@@ -11,14 +10,25 @@
 	{{ label }}
 </p>
 
-{% if items %}
-<h2>This part has items:</h2>
-{% else %}
-<h2>This part has no items:</h2>
-{% endif %} {% with links=items %} {% include "common/links.html" %} {% endwith
-%} {% if procedures %}
-<h2>This part is used in procedures:</h2>
-{% else %}
-<h2>This part is not used in any procedures:</h2>
-{% endif %} {% with links=procedures %} {% include "common/links.html" %} {%
-endwith %} {% endblock %}
+<h2>Part of items</h2>
+<div
+	data-property="http://ifixthat.org/partOf"
+	parent-uri="{{ uri }}"
+	data-object-type="Item"
+>
+	<input type="number" placeholder="Item ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=items %} {% include "common/links.html" %} {% endwith %}
+
+<h2>Procedures</h2>
+<div
+	data-property="http://ifixthat.org/guideOf"
+	child-uri="{{ uri }}"
+	data-object-type="Procedure"
+>
+	<input type="number" placeholder="Procedure ID" id="idInput" />
+	<button class="addLinkButton">Add</button>
+</div>
+{% with links=procedures %} {% include "common/links.html" %} {% endwith %} {%
+endblock %}

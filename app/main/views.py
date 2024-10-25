@@ -3,7 +3,7 @@
 import json
 from typing import Self
 from flask import Blueprint
-from owlready2 import get_ontology, default_world, sync_reasoner_pellet, Imp
+from owlready2 import *
 from pyshacl import validate
 from rdflib import Graph, Namespace
 

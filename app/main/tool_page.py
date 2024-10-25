@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect
 from rdflib import URIRef
 
 from .views import main_bp, Link, ifixthat, shacl_results
@@ -6,7 +6,9 @@ from .views import main_bp, Link, ifixthat, shacl_results
 @main_bp.route("/Tool/<tool>")
 def tool_page(tool: str) -> str:
     """The tool page"""
-    tool_instance = ifixthat.search_one(type=ifixthat.Tool, iri=f"*{tool}")
+    tool_instance = ifixthat.search_one(type=ifixthat.Tool, iri=f"*#{tool}")
+    if tool_instance is None:
+        return redirect('/')
 
     uri = URIRef(tool_instance.iri)
     errors = list(filter(lambda shacl_result: shacl_result.get('focusNode', None) == uri, shacl_results))
