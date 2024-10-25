@@ -2,11 +2,13 @@ from flask import render_template, redirect
 from rdflib import URIRef
 
 from .links import Link
-from .views import main_bp, ifixthat, shacl_results
+from .views import main_bp, ifixthat
 
 @main_bp.route("/Item/<item>")
 def item_page(item: str) -> str:
     """The item page"""
+    from main.views import shacl_results
+
     item_instance = ifixthat.search_one(type=ifixthat.Item, iri=f"*#{item}")
     if item_instance is None:
         return redirect('/')

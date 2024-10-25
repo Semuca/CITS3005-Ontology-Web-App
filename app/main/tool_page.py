@@ -2,11 +2,13 @@ from flask import render_template, redirect
 from rdflib import URIRef
 
 from .links import Link
-from .views import main_bp, ifixthat, shacl_results
+from .views import main_bp, ifixthat
 
 @main_bp.route("/Tool/<tool>")
 def tool_page(tool: str) -> str:
     """The tool page"""
+    from main.views import shacl_results
+
     tool_instance = ifixthat.search_one(type=ifixthat.Tool, iri=f"*#{tool}")
     if tool_instance is None:
         return redirect('/')

@@ -37,7 +37,7 @@ This is the search page without any query present- it will just present assorted
 
 The search form allows you to search through procedures, parts, items, and tools. Each one has a different form, but for our case we'll only search through procedures. This query searches for:
 - Forms that have the term 'Power switch' in their name, and
-- Forms that have 3 or more steps
+- Forms that have 6 or more steps
 
 We can see the results below:
 
@@ -93,7 +93,9 @@ Click on the 'Step 1' link to go to the step, type in the tool id (2) and press 
 
 <img src="docs/12.png" height="400">
 
-TODO: When SWRL is fixed, navigate back and reload the website and Ta Da! The tool is now listed under the required tools.
+After we restart the application, we can also see SWRL has inferred that this tool is required for the procedure as well.
+
+<img src="docs/13.png" height="400">
 
 ### Modifying the ontology
 To add new rules to the ontology, add the rule in Conjuctive Normal Form to the swrl.txt file on a single line. The rule will be applied to the reasoner on the next start of the Flask application.

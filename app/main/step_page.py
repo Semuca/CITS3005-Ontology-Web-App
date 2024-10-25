@@ -2,11 +2,13 @@ from flask import render_template, redirect
 from rdflib import URIRef
 
 from .links import Link
-from .views import main_bp, ifixthat, shacl_results
+from .views import main_bp, ifixthat
 
 @main_bp.route("/Step/<step>")
 def step_page(step: str) -> str:
     """The step page"""
+    from main.views import shacl_results
+
     step_instance = ifixthat.search_one(type=ifixthat.Step, iri=f"*#{step}")
     if step_instance is None:
         return redirect('/')

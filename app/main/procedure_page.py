@@ -2,11 +2,13 @@ from flask import render_template, redirect
 from rdflib import URIRef
 
 from .links import Link
-from .views import main_bp, ifixthat, shacl_results
+from .views import main_bp, ifixthat
 
 @main_bp.route("/Procedure/<procedure>")
 def procedure_page(procedure: str) -> str:
     """The procedure page"""
+    from main.views import shacl_results
+
     procedure_instance = ifixthat.search_one(type=ifixthat.Procedure, iri=f"*#{procedure}")
     if procedure_instance is None:
         return redirect('/')

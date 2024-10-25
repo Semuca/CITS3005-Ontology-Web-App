@@ -89,4 +89,5 @@ def run_reasoner():
 
         dup_shacl_results.append(shacl_result)
     shacl_results = list({json.dumps(d, sort_keys=True): d for d in dup_shacl_results}.values())
+    print(shacl_results)
     print("COLLECTION FINISHED")
