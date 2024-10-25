@@ -44,6 +44,7 @@ const searchButton = document.getElementById("searchButton");
 searchButton.addEventListener("click", () => {
     const _url = new URL(window.location.href, window.location.origin);
     _url.pathname = '/';
+    _url.search = '';
 
     const tabContainer = document.getElementById("search-tabs");
     const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
@@ -51,15 +52,24 @@ searchButton.addEventListener("click", () => {
     const type = selectedTabWindow.getAttribute("data-rdf-type");
     _url.searchParams.set('rdf_type', `ifixthat:${type}`);
 
-    const searchInput = selectedTabWindow.querySelector('#searchInput');
-    if (searchInput.value) {
-        _url.searchParams.set('name', searchInput.value);
+    const propertyInputs =
+		selectedTabWindow.querySelectorAll(".property-input");
+
+    propertyInputs.forEach((input) => {
+		const property = input.getAttribute("data-property");
+		const value = input.value;
+		if (value) {
+            _url.searchParams.set(property, value);
+		}
+	});
+
+    if (pageSize != 20) {
+        _url.searchParams.set('pageSize', pageSize);
     }
 
-    // const supplierUrl = selectedTabWindow.querySelector('#supplierUrl').value;
-    // if (type === "Tool" && supplierUrl) {
-    //     _url.searchParams.set('supplierUrl', supplierUrl)
-    // }
+    if (pageNumber != 1) {
+        _url.searchParams.set('page', pageNumber);
+    }
 
     window.location.href = _url.toString();
 });
