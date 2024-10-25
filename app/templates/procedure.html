@@ -52,5 +52,12 @@
 	<input type="number" placeholder="Tool ID" id="idInput" />
 	<button class="addLinkButton">Add</button>
 </div>
-{% with links=tools %} {% include "common/links.html" %} {% endwith %} {%
-endblock %}
+{% with links=tools %} {% include "common/links.html" %} {% endwith %}
+
+<h2>Subprocedure for</h2>
+{% with links=super_procedures %} {% include "common/links.html" %} {% endwith
+%}
+
+<h2>Has subprocedures</h2>
+{% with links=sub_procedures %} {% include "common/links.html" %} {% endwith %}
+{% endblock %}
