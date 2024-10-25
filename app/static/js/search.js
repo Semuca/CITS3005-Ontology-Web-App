@@ -44,6 +44,7 @@ const searchButton = document.getElementById("searchButton");
 searchButton.addEventListener("click", () => {
     const _url = new URL(window.location.href, window.location.origin);
     _url.pathname = '/';
+    _url.search = '';
 
     const tabContainer = document.getElementById("search-tabs");
     const selectedTabWindow = tabContainer.querySelector('.tab-content.active');
@@ -61,6 +62,14 @@ searchButton.addEventListener("click", () => {
             _url.searchParams.set(property, value);
 		}
 	});
+
+    if (pageSize != 20) {
+        _url.searchParams.set('pageSize', pageSize);
+    }
+
+    if (pageNumber != 1) {
+        _url.searchParams.set('page', pageNumber);
+    }
 
     window.location.href = _url.toString();
 });
