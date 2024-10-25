@@ -21,6 +21,8 @@ def procedure_page(procedure: str) -> str:
     items = [Link(item, 'http://ifixthat.org/guideOf', parent_uri=procedure_instance.iri) for item in procedure_instance.guideOf if isinstance(item, ifixthat.Item)]
     parts = [Link(part, 'http://ifixthat.org/guideOf', parent_uri=procedure_instance.iri) for part in procedure_instance.guideOf if isinstance(part, ifixthat.Part)]
     tools = [Link(tool, 'http://ifixthat.org/requiresTool', parent_uri=procedure_instance.iri) for tool in procedure_instance.requiresTool]
+    super_procedures = [Link(super_procedure, None) for super_procedure in procedure_instance.subProcedureOf]
+    sub_procedures = [Link(sub, None) for sub in ifixthat.search(is_a=ifixthat.Procedure, subProcedureOf=procedure_instance)]
 
     steps = []
     for step in procedure_instance.hasStep:
@@ -32,4 +34,4 @@ def procedure_page(procedure: str) -> str:
     steps.sort(key=lambda x: x[0].order)
     steps = [Link(step_ref, 'http://ifixthat.org/hasStep', parent_uri=procedure_instance.iri, title=f"Step {index + 1}", subtitle=step_actions, images=step_images) for index, (step_ref, step_actions, step_images) in enumerate(steps)]
 
-    return render_template('procedure.html', errors=errors, uri=procedure_instance.iri, label=label, steps=steps, items=items, parts=parts, tools=tools)
+    return render_template('procedure.html', errors=errors, uri=procedure_instance.iri, label=label, steps=steps, items=items, parts=parts, tools=tools, super_procedures=super_procedures, sub_procedures=sub_procedures)
