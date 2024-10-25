@@ -17,6 +17,14 @@ def search_page() -> str:
     # Count filters
     count_filters = []
 
+    # Supplier URL filter
+    supplier_url = request.args.get('http://ifixthat.org/supplierUrl')
+    if (supplier_url and rdf_type == 'ifixthat:Tool'):
+        count_filters.extend(
+            [(None, '?entity ifixthat:supplierUrl ?supplierUrl .', None),
+             (None, f'FILTER REGEX(?supplierUrl, "{supplier_url}", "i")', None)]
+             )
+
     # Procedure count filter
     procedure_count = request.args.get('procedureCount')
     if (procedure_count):
@@ -72,16 +80,12 @@ def search_page() -> str:
                  '?entity ifixthat:requiresTool ?tool .',
                  f'COUNT(?tool) >= {tool_count}'))
             
-    select_clause = ' '.join([count_filter[0] for count_filter in count_filters])
-    where_clause = '\n'.join([count_filter[1] for count_filter in count_filters])
-    having_clause = ' && '.join([count_filter[2] for count_filter in count_filters])
+    select_clause = ' '.join([count_filter[0] for count_filter in count_filters if count_filter[0] is not None])
+    where_clause = '\n'.join([count_filter[1] for count_filter in count_filters if count_filter[1] is not None])
+    having_clause = ' && '.join([count_filter[2] for count_filter in count_filters if count_filter[2] is not None])
     if (having_clause != ''):
         having_clause = f'HAVING({having_clause})'
-
-    print(select_clause)
-    print(where_clause)
-    print(having_clause)
-
+        
     # Query
     query = f"""
         PREFIX ifixthat: <http://ifixthat.org/>
