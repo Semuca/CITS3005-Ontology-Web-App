@@ -1,16 +1,16 @@
-# CITS3005 IFixIt Knowldge Graph for game consoles
+# CITS3005 IFixIt Knowldge Graph for Game Consoles
 
 ### By Heidi Leow (23643117) and James Frayne (23372032)
 
 ## Overview
 
-This is a Flask application to explore and manipulate the Game Console data from the [MyFixit-Dataset.](https://github.com/rub-ksv/MyFixit-Dataset) This application consists of multiple parts:
+This is a Flask application to explore and manipulate the game console data from the [MyFixit-Dataset.](https://github.com/rub-ksv/MyFixit-Dataset) This application consists of multiple parts:
 
 -   requirements.txt -===- PIP packages required to run the application
 -   Game Console.json -===- Original data for game consoles from the MyFixit Dataset
 -   ontology.py -===- Python script to convert the json data into the ontology.owl file
 -   ontology.owl -===- XML OWL file storing the IFixit ontology
--   swrl.txt SWRL -===- rules used to perform logic on the ontology
+-   swrl.txt -===- SWRL rules used to perform logic on the ontology
 -   query.py -===- Test script to run SPARQL queries on the ontology
 -   shapes.ttl -===- SHACL shapes to validate the ontology against
 -   validate.py -===- Test script to run the SHACL validation against the ontology
