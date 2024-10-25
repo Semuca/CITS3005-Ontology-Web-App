@@ -1,2 +1,1 @@
-Item(?item) ^ subCategoryOf(?item, ?y) ^ subCategoryOf(?y, ?z) ^ notEqual(?item, ?z) -> subCategoryOf(?item, ?z)
 Step(?step) ^ usesTool(?step, ?tool) ^ details(?orderedStep, ?step) ^ hasStep(?procedure, ?orderedStep) -> requiresTool(?procedure, ?tool)
