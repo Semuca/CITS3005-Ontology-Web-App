@@ -9,6 +9,8 @@ from rdflib import Graph, Namespace
 
 main_bp = Blueprint('main_bp', __name__)
 
+RUN_REASONER = False
+
 class Link:
 
     type_to_icon_map = {
@@ -37,19 +39,20 @@ class Link:
 
 ifixthat = get_ontology("../ontology.owl").load()
 
-# Open swrl.txt and load the rules from each line
-with open('../swrl.txt', 'r') as file:
-    lines = file.readlines()
+if (RUN_REASONER):
+    # Open swrl.txt and load the rules from each line
+    with open('../swrl.txt', 'r') as file:
+        lines = file.readlines()
 
-with ifixthat:
-    for line in lines:
-        imp = Imp()
-        imp.set_as_rule(line)
+    with ifixthat:
+        for line in lines:
+            imp = Imp()
+            imp.set_as_rule(line)
 
-# Run the reasoner
-print("REASONER FINISHED")
-sync_reasoner_pellet(infer_property_values=True, infer_data_property_values=True)
-print("REASONER FINISHED")
+    # Run the reasoner
+    print("REASONER FINISHED")
+    sync_reasoner_pellet(infer_property_values=True, infer_data_property_values=True)
+    print("REASONER FINISHED")
 
 
 # Create a graph from the ontology
@@ -64,48 +67,49 @@ g.bind("tool", f"{domain}Tool#")
 g.bind("step", f"{domain}Step#")
 g.bind("image", f"{domain}Image#")
 
+shacl_results = []
+if (RUN_REASONER):
+    # Perform SHACL validation
+    shacl = Namespace("http://www.w3.org/ns/shacl#")
+    shacl_graph = Graph()
+    shacl_graph.parse("shapes.ttl", format="turtle")
 
-# Perform SHACL validation
-shacl = Namespace("http://www.w3.org/ns/shacl#")
-shacl_graph = Graph()
-shacl_graph.parse("shapes.ttl", format="turtle")
-
-print("STARTING VALIDATION")
-conforms, results_graph, results_text = validate(
-    g,
-    shacl_graph=shacl_graph,
-    inference='none',
-)
-print("VALIDATION FINISHED")
+    print("STARTING VALIDATION")
+    conforms, results_graph, results_text = validate(
+        g,
+        shacl_graph=shacl_graph,
+        inference='none',
+    )
+    print("VALIDATION FINISHED")
 
 
-# Collect the error results
-print("COLLECTING RESULTS")
-dup_shacl_results = []
-for result in results_graph.subjects():
-    shacl_result = {}
+    # Collect the error results
+    print("COLLECTING RESULTS")
+    dup_shacl_results = []
+    for result in results_graph.subjects():
+        shacl_result = {}
 
-    # Skip the result if it only has one predicate (Which is a pass)
-    severity = results_graph.value(subject=result, predicate=shacl.resultSeverity)
+        # Skip the result if it only has one predicate (Which is a pass)
+        severity = results_graph.value(subject=result, predicate=shacl.resultSeverity)
 
-    if not (severity and severity == shacl.Violation):
-        continue
+        if not (severity and severity == shacl.Violation):
+            continue
 
-    for predicate, obj in results_graph.predicate_objects(subject=result):
-        if (predicate == shacl.focusNode):
-            shacl_result[predicate.split("#")[-1] if "#" in predicate else predicate] = obj
-        else:
-            shacl_result[predicate.split("#")[-1] if "#" in predicate else predicate] = obj.split("#")[-1] if "#" in obj else obj
-
-    if 'detail' in shacl_result:
-        detail = {}
-        for predicate, obj in results_graph.predicate_objects(subject=shacl_result['detail']):
+        for predicate, obj in results_graph.predicate_objects(subject=result):
             if (predicate == shacl.focusNode):
-                detail[predicate.split("#")[-1] if "#" in predicate else predicate] = obj
+                shacl_result[predicate.split("#")[-1] if "#" in predicate else predicate] = obj
             else:
-                detail[predicate.split("#")[-1] if "#" in predicate else predicate] = obj.split("#")[-1] if "#" in obj else obj
-        shacl_result['detail'] = detail
+                shacl_result[predicate.split("#")[-1] if "#" in predicate else predicate] = obj.split("#")[-1] if "#" in obj else obj
 
-    dup_shacl_results.append(shacl_result)
-shacl_results = list({json.dumps(d, sort_keys=True): d for d in dup_shacl_results}.values())
-print("COLLECTION FINISHED")
+        if 'detail' in shacl_result:
+            detail = {}
+            for predicate, obj in results_graph.predicate_objects(subject=shacl_result['detail']):
+                if (predicate == shacl.focusNode):
+                    detail[predicate.split("#")[-1] if "#" in predicate else predicate] = obj
+                else:
+                    detail[predicate.split("#")[-1] if "#" in predicate else predicate] = obj.split("#")[-1] if "#" in obj else obj
+            shacl_result['detail'] = detail
+
+        dup_shacl_results.append(shacl_result)
+    shacl_results = list({json.dumps(d, sort_keys=True): d for d in dup_shacl_results}.values())
+    print("COLLECTION FINISHED")
