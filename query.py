@@ -1,3 +1,5 @@
+# By Heidi Leow (23643117) and James Frayne (23372032)
+
 from owlready2 import get_ontology, default_world
 
 # Load the ontology as RDFLib graph

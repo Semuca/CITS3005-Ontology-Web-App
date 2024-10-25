@@ -1,3 +1,5 @@
+# By Heidi Leow (23643117) and James Frayne (23372032)
+
 from typing import Self
 
 

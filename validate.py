@@ -1,3 +1,4 @@
+# By Heidi Leow (23643117) and James Frayne (23372032)
 
 import json
 from rdflib import Graph, Namespace

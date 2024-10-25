@@ -1,4 +1,5 @@
 """Defines endpoint for creating entries"""
+# By Heidi Leow (23643117) and James Frayne (23372032)
 
 from flask import request
 from .bp import api_bp
