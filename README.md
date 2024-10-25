@@ -1,6 +1,6 @@
 # CITS3005 IFixIt Knowldge Graph for game consoles
 
-### Heidi Leow (23643117) and James Frayne (23372032)
+### By Heidi Leow (23643117) and James Frayne (23372032)
 
 ## Overview
 
@@ -84,6 +84,10 @@ Hit the 'delete' button to remove the link to the 'iron' tool.
 If we restart the application, we can now see that all validation has passed for this procedure!
 
 <img src="docs/10.png" height="400">
+
+We can also delete an instance by pressing the 'Delete Procedure' button and confirming the modal.
+
+<img src="docs/13.png" height="400">
 
 ### Adding new instances to the knowledge graph
 
