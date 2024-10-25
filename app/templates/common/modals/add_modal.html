@@ -1,30 +1,64 @@
-{% extends "common/modal.html" %}
-
-{% block content %}
+{% extends "common/modal.html" %} {% block content %}
 <div id="add-tabs" class="tab-container">
-    <div class="tabs">
-        <button onclick="openTab(event, 'add-tabs', 'add-procedure-tab')">Procedures</button>
-        <button onclick="openTab(event, 'add-tabs', 'add-part-tab')">Parts</button>
-        <button onclick="openTab(event, 'add-tabs', 'add-item-tab')">Items</button>
-        <button onclick="openTab(event, 'add-tabs', 'add-tool-tab')">Tools</button>
-    </div>
+	<div class="tabs">
+		<button onclick="openTab(event, 'add-tabs', 'add-procedure-tab')">
+			Procedures
+		</button>
+		<button onclick="openTab(event, 'add-tabs', 'add-part-tab')">
+			Parts
+		</button>
+		<button onclick="openTab(event, 'add-tabs', 'add-item-tab')">
+			Items
+		</button>
+		<button onclick="openTab(event, 'add-tabs', 'add-tool-tab')">
+			Tools
+		</button>
+	</div>
 
-    <div id="add-procedure-tab" class="tab-content active" data-rdf-type="Procedure">
-        <label><span style="color: red">*</span>Title</label>
-        <input type="text" id="searchInput" placeholder="Add procedure name...">
-    </div>
-    <div id="add-part-tab" class="tab-content" data-rdf-type="Part">
-        <label><span style="color: red">*</span>Name</label>
-        <input type="text" id="searchInput" placeholder="Add part name...">
-    </div>
-    <div id="add-item-tab" class="tab-content" data-rdf-type="Item">
-        <label><span style="color: red">*</span>Name</label>
-        <input type="text" id="searchInput" placeholder="Add item name...">
-    </div>
-    <div id="add-tool-tab" class="tab-content" data-rdf-type="Tool">
-        <label><span style="color: red">*</span>Name</label>
-        <input type="text" id="searchInput" placeholder="Add tool name...">
-    </div>
+	<div
+		id="add-procedure-tab"
+		class="tab-content active"
+		data-rdf-type="Procedure"
+	>
+		<label><span style="color: red">*</span>Label</label>
+		<input
+			type="text"
+			id="searchInput"
+			class="property-input"
+			data-property="http://www.w3.org/2000/01/rdf-schema#label"
+			placeholder="Add procedure name..."
+		/>
+	</div>
+	<div id="add-part-tab" class="tab-content" data-rdf-type="Part">
+		<label><span style="color: red">*</span>Label</label>
+		<input
+			type="text"
+			id="searchInput"
+			class="property-input"
+			data-property="http://www.w3.org/2000/01/rdf-schema#label"
+			placeholder="Add part name..."
+		/>
+	</div>
+	<div id="add-item-tab" class="tab-content" data-rdf-type="Item">
+		<label><span style="color: red">*</span>Label</label>
+		<input
+			type="text"
+			id="searchInput"
+			class="property-input"
+			data-property="http://www.w3.org/2000/01/rdf-schema#label"
+			placeholder="Add item name..."
+		/>
+	</div>
+	<div id="add-tool-tab" class="tab-content" data-rdf-type="Tool">
+		<label><span style="color: red">*</span>Label</label>
+		<input
+			type="text"
+			id="searchInput"
+			class="property-input"
+			data-property="http://www.w3.org/2000/01/rdf-schema#label"
+			placeholder="Add tool name..."
+		/>
+	</div>
 </div>
-    <button id="addButton">Add</button>
+<button id="addButton">Add</button>
 {% endblock %}

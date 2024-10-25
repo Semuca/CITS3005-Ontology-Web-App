@@ -12,7 +12,7 @@ def tool_page(tool: str) -> str:
     errors = list(filter(lambda shacl_result: shacl_result.get('focusNode', None) == uri, shacl_results))
 
     label = tool_instance.label[0]
-    supplier_url = tool_instance.supplierUrl[0]
+    supplier_url = tool_instance.supplierUrl[0] if len(tool_instance.supplierUrl) > 0 else ""
 
     procedures_requiring_tool = ifixthat.search(type=ifixthat.Procedure, requiresTool=tool_instance)
     procedures = [Link(procedure) for procedure in procedures_requiring_tool]
