@@ -17,6 +17,18 @@ def delete_entry():
         return 'URI not provided', 400
 
     instance = ifixthat.search_one(iri=uri)
+
+    if instance.is_a[0].name == "Procedure":
+        for ordered_step in instance.hasStep:
+            destroy_entity(ordered_step)
+    if instance.is_a[0].name == "Step":
+        for ordered_step in ifixthat.search(is_a=ifixthat.OrderedStep, details=instance):
+            procedure_instance = ifixthat.search_one(is_a=ifixthat.Procedure, hasStep=ordered_step)
+            order = ordered_step.order[0]
+            for step in procedure_instance.hasStep[order:]:
+                step.order[0] -= 1
+            destroy_entity(ordered_step)
+
     destroy_entity(instance)
 
     ifixthat.save(file="../ontology.owl")
