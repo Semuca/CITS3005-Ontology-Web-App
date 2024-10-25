@@ -61,7 +61,7 @@ with ifixthat:
         range = [Step]
 
     # Item schema
-    class subCategoryOf(ObjectProperty, TransitiveProperty):
+    class subCategoryOf(ObjectProperty):
         domain = [Item]
         range = [Item]
 
