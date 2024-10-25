@@ -13,6 +13,12 @@
 		<button onclick="openTab(event, 'add-tabs', 'add-tool-tab')">
 			Tools
 		</button>
+		<button onclick="openTab(event, 'add-tabs', 'add-step-tab')">
+			Steps
+		</button>
+		<button onclick="openTab(event, 'add-tabs', 'add-image-tab')">
+			Images
+		</button>
 	</div>
 
 	<div
@@ -57,6 +63,26 @@
 			class="property-input"
 			data-property="http://www.w3.org/2000/01/rdf-schema#label"
 			placeholder="Add tool name..."
+		/>
+	</div>
+	<div id="add-step-tab" class="tab-content" data-rdf-type="Step">
+		<label><span style="color: red">*</span>Step description</label>
+		<input
+			type="text"
+			id="searchInput"
+			class="property-input"
+			data-property="http://ifixthat.org/actions"
+			placeholder="Add step description..."
+		/>
+	</div>
+	<div id="add-image-tab" class="tab-content" data-rdf-type="Image">
+		<label><span style="color: red">*</span>Image URL</label>
+		<input
+			type="text"
+			id="searchInput"
+			class="property-input"
+			data-property="http://ifixthat.org/dataUrl"
+			placeholder="Add image URL..."
 		/>
 	</div>
 </div>

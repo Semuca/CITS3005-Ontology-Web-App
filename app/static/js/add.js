@@ -7,6 +7,8 @@ const tabIdToRequiredFields = {
 	"add-part-tab": ["searchInput"],
 	"add-item-tab": ["searchInput"],
 	"add-tool-tab": ["searchInput"],
+	"add-step-tab": ["searchInput"],
+	"add-image-tab": ["searchInput"],
 };
 
 function setupValidation() {
